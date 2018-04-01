@@ -1,6 +1,6 @@
-ssh-keys/id_rsa
 *.swp
 *.retry
-*.srl
-pki/*test*
-pki/picluster
+inventories/*
+!inventories/sample
+vars/*
+!vars/cloud-config.sample.yml
