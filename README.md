@@ -19,11 +19,11 @@ Hypervisor support for libvirt and KVM
 
 ## Install kubernetes
 
-    ansible-playbook -i inventories/<env> install.yml
+    ansible-playbook -i inventories/<env> kubernetes.yml
 
 ### Fix firewall after reboot (Fedora Atomic)
 
-    ansible-playbook -i inventories/<env> install.yml --tags firewall
+    ansible-playbook -i inventories/<env> kubernetes.yml --tags firewall
 
 ## Configure kubectl client
 
