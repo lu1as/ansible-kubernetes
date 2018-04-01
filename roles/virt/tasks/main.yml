@@ -1,0 +1,19 @@
+- name: download latest atomic image
+  get_url:
+    url: "{{virt_atomic_image}}"
+    dest: "{{virt_drives_dir}}/{{virt_image}}"
+    mode: 0644
+
+- name: install python-libvirt
+  apt:
+    name: python-libvirt
+
+- name: create virtual machine
+  include_tasks: vm-creation.yml
+  with_items: "{{groups.virtual_machines}}"
+
+- name: start virtual machine
+  virt:
+    name: "{{hostvars[item].vm_name}}"
+    state: running
+  with_items: "{{groups.virtual_machines}}"

@@ -1,0 +1,13 @@
+flanneld_network_name: minion
+# flanneld network with subnet mask
+flanneld_network: 172.16.0.0/16
+
+flanneld_config_folder: /etc/flanneld
+flanneld_cert_folder: "{{flanneld_config_folder}}/certs"
+flanneld_image: registry.fedoraproject.org/f27/flannel
+flanneld_download_version: v0.10.0
+#flanneld_arch:
+
+# etcd
+etcd_cert_folder: "{{flanneld_cert_folder}}"
+etcd_port: 2379

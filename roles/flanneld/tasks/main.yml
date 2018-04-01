@@ -1,0 +1,64 @@
+# install
+- name: install (Fedora)
+  atomic_container:
+    name: flanneld
+    image: "{{flanneld_image}}"
+    backend: ostree
+    state: latest
+    mode: system
+  when: ansible_distribution == 'Fedora'
+
+- name: install (Debian)
+  include_tasks: install_debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: create config directory
+  file:
+    path: "{{flanneld_config_folder}}"
+    state: directory
+
+# pki
+- include_role:
+    name: pki
+  vars:
+    cert_folder: "{{flanneld_cert_folder}}"
+
+# network config
+- block:
+  - name: copy cluster config
+    template:
+      src: flanneld-config.json.j2
+      dest: "{{flanneld_config_folder}}/flanneld-config.json"
+    register: flanneld_config
+
+  - name: upload cluster config to etcd
+    shell: |
+      /usr/local/bin/etcdctl --endpoints https://{{ansible_hostname}}.{{kube_tld}}:{{etcd_port}} \
+      --ca-file {{etcd_cert_folder}}/ca.crt \
+      --cert-file {{etcd_cert_folder}}/node.crt \
+      --key-file {{etcd_cert_folder}}/node.key \
+      set {{flanneld_network_name}}/network/config < {{flanneld_config_folder}}/flanneld-config.json
+    when: flanneld_config.changed
+
+  when: ansible_hostname == hostvars[groups['etcd_servers'][0]].ansible_hostname
+
+# daemon config
+- name: copy config (Atomic)
+  template:
+    src: flanneld.j2
+    dest: "/etc/sysconfig/flanneld"
+  notify: 
+    - restart flanneld on masters
+    - restart flanneld on minions
+  when: is_atomic | default(false)
+
+- name: copy config (Debian)
+  template:
+    src: flanneld.j2
+    dest: "/etc/default/flanneld"
+  notify: 
+    - restart flanneld on masters
+    - restart flanneld on minions
+  when: ansible_os_family == 'Debian'
+
+- meta: flush_handlers

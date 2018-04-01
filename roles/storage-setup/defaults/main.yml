@@ -1,0 +1,6 @@
+# storage drive to expand atomic image
+storage_drive: /dev/vdb
+# root partition size
+storage_root_size: 4G
+# for raspbian nfs boot
+storage_cache_dir: "{{cache_dir | default('/tmp')}}"

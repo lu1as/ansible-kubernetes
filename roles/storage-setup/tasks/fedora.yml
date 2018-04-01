@@ -1,0 +1,38 @@
+- name: copy config
+  template:
+    src: docker-storage-setup.j2
+    dest: /etc/sysconfig/docker-storage-setup
+  register: storageconfig
+  
+- block:
+  - file:
+      path: /etc/sysconfig/docker-storage
+      state: absent
+
+  - name: "create empty filesystem"
+    filesystem:
+      fstype: xfs
+      dev: "{{storage_drive}}"
+      opts: -f
+
+  - name: grow docker storage
+    shell: docker-storage-setup
+    ignore_errors: true
+    register: dockersetup
+
+  - name: grow root fs
+    shell: xfs_growfs /
+    when: dockersetup|succeeded
+
+  - name: remove config
+    file:
+      path: /etc/sysconfig/docker-storage-setup
+      state: absent
+    when: dockersetup|failed
+
+  - debug:
+      msg: "FATAL: docker storage setup was not successfull, reboot and try again"
+    failed_when: true
+    when: dockersetup|failed
+  
+  when: storageconfig.changed

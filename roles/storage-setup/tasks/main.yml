@@ -1,0 +1,8 @@
+- name: storage-setup (Atomic)
+  include_tasks: fedora.yml
+  when: is_atomic | default(false)
+
+- name: storage-setup (Raspbian)
+  include_tasks: raspbian.yml
+  when: "ansible_lsb.id is defined and
+        ansible_lsb.id == 'Raspbian'"

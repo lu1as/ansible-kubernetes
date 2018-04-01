@@ -1,0 +1,35 @@
+- name: create certificate directory
+  file:
+    path: "{{cert_folder}}"
+    state: directory
+
+- name: fetch ca certificate
+  slurp:
+    src: "{{pki_dir}}/certs/ca.crt"
+  register:  "{{ansible_hostname}}_ca_cert"
+  delegate_to: "{{groups['kube_masters'][0]}}"
+
+- name: fetch node key
+  slurp:
+    src: "{{pki_dir}}/keys/{{ansible_hostname}}.key"
+  register: "{{ansible_hostname}}_node_key"
+  delegate_to: "{{groups['kube_masters'][0]}}"
+  become: true
+
+- name: fetch node certificate
+  slurp:
+    src: "{{pki_dir}}/certs/{{ansible_hostname}}.crt"
+  register: "{{ansible_hostname}}_node_cert"
+  delegate_to: "{{groups['kube_masters'][0]}}"
+
+- name: push pki data
+  copy:
+    content: "{{ vars[item.name]['content'] | b64decode }}"
+    dest: "{{cert_folder}}/{{item.dest}}"
+  with_items:
+    - name: "{{ansible_hostname}}_ca_cert"
+      dest: ca.crt
+    - name: "{{ansible_hostname}}_node_key"
+      dest: node.key
+    - name: "{{ansible_hostname}}_node_cert"
+      dest: node.crt

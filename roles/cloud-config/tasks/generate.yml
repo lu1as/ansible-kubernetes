@@ -1,0 +1,31 @@
+- name: create meta-data
+  template:
+    src: meta-data.yml.j2
+    dest: /root/meta-data
+  changed_when: false
+
+- name: create user-data
+  template:
+    src: user-data.yml.j2
+    dest: /root/user-data
+  changed_when: false
+
+- name: generate iso
+  shell: |
+    /usr/bin/genisoimage \
+    -output {{virt_images_dir}}/{{hostvars[item].vm_name}}-cloud-config.iso \
+    -volid cidata -joliet -rock user-data meta-data
+  args:
+    chdir: /root
+    creates: "{{virt_images_dir}}/{{hostvars[item].vm_name}}-cloud-config.iso"
+
+- name: remove config directory
+  file:
+    name: "/root/{{file}}"
+    state: absent
+  with_items:
+    - meta-data
+    - user-data
+  loop_control:
+    loop_var: file
+  changed_when: false

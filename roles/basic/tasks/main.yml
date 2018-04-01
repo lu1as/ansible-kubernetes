@@ -1,0 +1,30 @@
+- name: set firewall policies
+  iptables:
+    table: filter
+    chain: "{{ item }}"
+    policy: ACCEPT
+  with_items:
+    - INPUT
+    - OUTPUT
+    - FORWARD
+
+- name: add localhost entries
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+# - name: copy ca cert
+#   copy:
+#     src: ../../../pki/{{kube_context}}/certs/ca.crt
+#     dest: /etc/pki/ca-trust/source/anchors/k8s-ca.crt
+#   notify: update ca trust
+
+- name: disable selinux permanently
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: 'SELINUX='
+    line: 'SELINUX=disabled'
+  notify: disable selinux
+  when: ansible_selinux_python_present
+
+- meta: flush_handlers

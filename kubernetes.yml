@@ -1,0 +1,18 @@
+- name: kubernetes
+  hosts: kube
+  become: true
+  roles:
+    - role: storage-setup
+      tags: storage
+    - role: basic
+      tags: basic,firewall
+    - role: pki
+      tags: pki
+    - role: etcd
+      tags: etcd
+    - role: docker
+      tags: docker
+    - role: flanneld
+      tags: flanneld
+    - role: kubernetes
+      tags: kubernetes,kube

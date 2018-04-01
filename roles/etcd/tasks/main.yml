@@ -1,0 +1,31 @@
+- block:
+  # install
+  - name: install (Atomic)
+    atomic_container:
+      name: etcd
+      image: "{{etcd_image}}"
+      backend: ostree
+      state: latest
+      mode: system
+    when: is_atomic | default(false)
+
+  - name: install (Debian)
+    include_tasks: install_debian.yml
+    when: ansible_os_family == 'Debian'
+
+  # pki
+  - include_role:
+      name: pki
+    vars:
+      cert_folder: "{{etcd_cert_folder}}"
+
+  # config
+  - name: copy config
+    template:
+      src: etcd.j2
+      dest: "{{etcd_config_folder}}/etcd.conf"
+    notify: restart etcd
+
+  - meta: flush_handlers
+
+  when: "'etcd_servers' in group_names"

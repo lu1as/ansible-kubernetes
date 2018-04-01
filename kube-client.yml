@@ -1,0 +1,5 @@
+- name: kubectl
+  hosts: localhost
+  roles:
+    - role: kubectl
+      tags: kubectl

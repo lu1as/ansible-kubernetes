@@ -1,0 +1,4 @@
+kube_context: yourserver
+kube_tld: kube.examle.de
+kube_apiserver_port: 8080
+kubectl_cert_folder: "{{ansible_user_dir}}/.kube/pki/{{kube_context}}"

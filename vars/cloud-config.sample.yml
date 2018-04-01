@@ -1,0 +1,3 @@
+cloud_config_password: secure
+cloud_config_authorized_keys:
+  - ssh-rsa ... name

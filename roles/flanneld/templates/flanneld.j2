@@ -1,0 +1,10 @@
+FLANNEL_ETCD_ENDPOINTS="{% for host in groups['etcd_servers'] %}https://{{hostvars[host].ansible_hostname}}.{{kube_tld}}:{{ etcd_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+FLANNEL_ETCD_PREFIX="/{{flanneld_network_name}}/network"
+FLANNEL_OPTIONS="--etcd-cafile={{flanneld_cert_folder}}/ca.crt --etcd-certfile={{flanneld_cert_folder}}/node.crt --etcd-keyfile={{flanneld_cert_folder}}/node.key"
+
+# new naming conventions
+FLANNELD_ETCD_ENDPOINTS="{% for host in groups['etcd_servers'] %}https://{{hostvars[host].ansible_hostname}}.{{kube_tld}}:{{ etcd_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+FLANNELD_ETCD_PREFIX="/{{flanneld_network_name}}/network"
+FLANNELD_ETCD_CAFILE="{{flanneld_cert_folder}}/ca.crt"
+FLANNELD_ETCD_CERTFILE="{{flanneld_cert_folder}}/node.crt"
+FLANNELD_ETCD_KEYFILE="{{flanneld_cert_folder}}/node.key"

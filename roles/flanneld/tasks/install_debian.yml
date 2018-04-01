@@ -1,0 +1,53 @@
+- name: check version
+  shell: flanneld --version
+  register: flanneld_version
+  ignore_errors: true
+  check_mode: false
+  changed_when: false
+
+- name: "install ({{flanneld_arch | default(ansible_architecture)}})"
+  get_url:
+    url: "https://github.com/coreos/flannel/releases/download/{{flanneld_download_version}}/flanneld-{{flanneld_arch | default(ansible_architecture)}}"
+    dest: "/usr/local/bin/flanneld"
+    remote_src: true
+    mode: +x
+  notify: 
+    - restart flanneld on masters
+    - restart flanneld on minions
+  when: "flanneld_download_version not in flanneld_version.stdout"
+
+- block:
+  - name: create required directories
+    file:
+      path: "{{item}}"
+      state: directory
+    with_items:
+      - /usr/libexec/flannel
+      - /etc/systemd/system/docker.service.d
+
+  - name: patch docker service
+    copy:
+      src: docker-dropin.conf
+      dest: /etc/systemd/system/docker.service.d/40-flanneld-network.conf
+    notify: 
+      - restart flanneld on masters
+      - restart flanneld on minions
+
+  - name: install docker opts script
+    copy:
+      src: mk-docker-opts.sh
+      dest: /usr/libexec/flannel/mk-docker-opts.sh
+      mode: +x
+    notify: 
+      - restart flanneld on masters
+      - restart flanneld on minions
+
+  when: "'kube_minions' in group_names"
+
+- name: create service
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/flanneld.service
+  notify: 
+    - restart flanneld on masters
+    - restart flanneld on minions

@@ -1,0 +1,14 @@
+- name: create ca
+  include_tasks: ca.yml
+  when: (cert_folder is not defined) and
+        (ansible_hostname == hostvars[groups['kube_masters'][0]].ansible_hostname)
+
+- name: create certificates
+  include_tasks: certs.yml
+  when: (cert_folder is not defined) and
+        (ansible_hostname == hostvars[groups['kube_masters'][0]].ansible_hostname)
+  with_items: "{{groups.pki_certs}}"
+
+- name: "copy certificates to {{cert_folder}}"
+  include_tasks: copy.yml
+  when: cert_folder is defined

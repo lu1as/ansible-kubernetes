@@ -1,0 +1,13 @@
+# kubernetes kubelet (minion) config
+
+# The address for the info server to serve on (set to 0.0.0.0 or "" for all interfaces)
+KUBELET_ADDRESS="--address=0.0.0.0"
+
+# You may leave this blank to use the actual hostname
+# KUBELET_HOSTNAME="--hostname-override={{ansible_hostname}}.{{kube_tld}}"
+
+# location of the api-server
+KUBELET_API_SERVER="--require-kubeconfig --kubeconfig={{kube_config_folder}}/kubeconfig"
+
+# Add your own!
+KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns={{kube_dns}} --cluster-domain={{kube_dns_domain}} --kube-reserved=cpu={{kube_kubelet_reserved_cpu}},memory={{kube_kubelet_reserved_memory}} --system-reserved=cpu={{kube_system_reserved_cpu}},memory={{kube_system_reserved_memory}}"

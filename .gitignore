@@ -1,0 +1,6 @@
+ssh-keys/id_rsa
+*.swp
+*.retry
+*.srl
+pki/*test*
+pki/picluster

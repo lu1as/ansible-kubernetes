@@ -1,0 +1,15 @@
+- name: iptables
+  systemd:
+    name: iptables
+    state: restarted
+    enabled: true
+
+- name: iptables save
+  shell: /sbin/service iptables save
+  notify: iptables
+
+- name: update ca trust
+  shell: /bin/update-ca-trust
+
+- name: disable selinux
+  shell: setenforce 0

@@ -1,0 +1,7 @@
+#cloud-config
+password: {{cloud_config_password}}
+ssh_pwauth: False
+chpasswd: { expire: False }
+
+ssh_authorized_keys:
+  {% for key in cloud_config_authorized_keys %}- {{key}}{% endfor %}

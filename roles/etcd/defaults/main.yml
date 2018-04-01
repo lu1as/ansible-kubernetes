@@ -1,0 +1,12 @@
+# etcd listen port
+etcd_port: 2379
+# etcd cluster peer port
+etcd_peer_port: 2380
+
+etcd_config_folder: /etc/etcd
+etcd_cert_folder: "{{etcd_config_folder}}/certs"
+etcd_image: registry.fedoraproject.org/f27/etcd
+etcd_download_version: v3.3.0
+etcd_install_local_binary: false
+etcd_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
+#etcd_arch:

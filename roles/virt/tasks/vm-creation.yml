@@ -1,0 +1,24 @@
+- name: copy system image
+  copy:
+    remote_src: true
+    src: "{{virt_drives_dir}}/{{virt_image}}"
+    dest: "{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2"
+
+- name: create lvm data partition
+  lvol:
+    vg: "{{virt_lvm_vg}}"
+    lv: "{{hostvars[item].vm_name}}-data"
+    size: "{{hostvars[item].data_size}}"
+
+# - name: set static dhcp address
+#   shell: |
+#       virsh net-update default add ip-dhcp-host \
+#       "<host mac='{{hostvars[item].mac_address}}' name='{{hostvars[item].hostname}}' ip='{{hostvars[item].ansible_host}}' />" \
+#       --live --config
+#   ignore_errors: true
+
+- name: create virtual machine
+  virt:
+    name: "{{hostvars[item].vm_name}}"
+    command: define
+    xml: "{{lookup('template', 'k8s-vm.xml.j2')}}"

@@ -1,0 +1,19 @@
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/coreos/etcd
+After=network.target
+
+[Service]
+User=etcd
+Type=notify
+{% if ansible_lsb.id == 'Raspbian' %}
+Environment=ETCD_UNSUPPORTED_ARCH=arm
+{% endif %}
+EnvironmentFile=/etc/etcd/etcd.conf
+ExecStart=/usr/local/bin/etcd
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target

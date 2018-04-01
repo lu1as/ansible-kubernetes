@@ -1,0 +1,27 @@
+- name: install kubectl (RedHat)
+  dnf:
+    name: kubernetes-client
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- include_role: 
+    name: pki
+  vars:
+    cert_folder: "{{kubectl_cert_folder}}"
+    ansible_hostname: "client"
+
+- name: set kubectl context
+  shell: |
+    kubectl config set-cluster {{kube_context}}-cluster \
+    --server=https://master.{{kube_tld}}:{{kube_apiserver_port}} \
+    --certificate-authority={{kubectl_cert_folder}}/ca.crt
+
+    kubectl config set-credentials {{kube_context}}-admin \
+    --client-certificate={{kubectl_cert_folder}}/node.crt \
+    --client-key={{kubectl_cert_folder}}/node.key
+
+    kubectl config set-context {{kube_context}} \
+    --cluster={{kube_context}}-cluster \
+    --user={{kube_context}}-admin --namespace=default
+  args:
+    executable: /bin/bash

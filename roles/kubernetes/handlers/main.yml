@@ -1,0 +1,38 @@
+- name: systemd reload
+  systemd:
+    daemon_reload: true
+
+- name: restart kube-apiserver
+  systemd:
+    name: kube-apiserver
+    state: restarted
+    enabled: true
+  notify: restart kube-scheduler
+  when: "'kube_masters' in group_names"
+
+- name: restart kube-scheduler
+  systemd:
+    name: kube-scheduler
+    state: restarted
+    enabled: true
+  notify: restart kube-controller-manager
+
+- name: restart kube-controller-manager
+  systemd:
+    name: kube-controller-manager
+    state: restarted
+    enabled: true
+
+- name: restart kubelet
+  systemd:
+    name: kubelet
+    state: restarted
+    enabled: true
+  notify: restart kube-proxy
+  when: "'kube_minions' in group_names"
+
+- name: restart kube-proxy
+  systemd:
+    name: kube-proxy
+    state: restarted
+    enabled: true

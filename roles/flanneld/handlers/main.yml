@@ -1,0 +1,16 @@
+- name: restart flanneld on masters
+  systemd:
+    name: flanneld
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  when: "'kube_masters' in group_names"
+
+- name: restart flanneld on minions
+  systemd:
+    name: flanneld
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  notify: restart docker
+  when: "'kube_minions' in group_names"

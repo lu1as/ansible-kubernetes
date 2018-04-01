@@ -1,0 +1,74 @@
+- name: install btrfs
+  apt:
+    name: btrfs-progs
+
+- name: create empty filesystem
+  filesystem:
+    fstype: btrfs
+    dev: "{{storage_drive}}"
+
+- name: mount storage
+  mount:
+    src: "{{storage_drive}}"
+    path: /mnt
+    fstype: btrfs
+    state: mounted
+
+- block:
+  - name: create master subvolumes
+    shell: "btrfs subvolume create /mnt/{{item}}"
+    args:
+      creates: "/mnt/{{item}}"
+    with_items:
+      - etcd
+
+  - name: mount master subvolumes
+    mount:
+      src: "{{storage_drive}}"
+      path: "{{item.mnt}}"
+      fstype: btrfs
+      state: mounted
+      opts: "subvol={{item.name}}"
+    with_items:
+      - name: etcd
+        mnt: /var/lib/etcd
+
+  when: "'kube_masters' in group_names"
+
+- block:
+  - name: create minion subvolumes
+    shell: "btrfs subvolume create /mnt/{{item}}"
+    args:
+      creates: "/mnt/{{item}}"
+    with_items:
+      - docker
+      - kubelet
+
+  - name: mount minion subvolumes
+    mount:
+      src: "{{storage_drive}}"
+      path: "{{item.mnt}}"
+      fstype: btrfs
+      state: mounted
+      opts: "subvol={{item.name}}"
+    with_items:
+      - name: docker
+        mnt: /var/lib/docker
+      - name: kubelet
+        mnt: /var/lib/kubelet
+  
+  when: "'kube_minions' in group_names"
+
+- name: create cache subvolume
+  shell: btrfs subvolume create /mnt/cache
+  args:
+    creates: /mnt/cache
+
+- name: mount cache subvolume
+  mount:
+    src: "{{storage_drive}}"
+    path: "{{storage_cache_dir}}"
+    fstype: btrfs
+    state: mounted
+    opts: subvol=cache
+  notify: fix cache permissions

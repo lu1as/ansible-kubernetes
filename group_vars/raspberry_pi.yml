@@ -1,0 +1,7 @@
+storage_drive: /dev/mmcblk0
+docker_arch: armhf
+flanneld_arch: arm
+kube_arch: arm
+etcd_arch: arm
+etcd_install_local_binary: true
+cache_dir: /tmp

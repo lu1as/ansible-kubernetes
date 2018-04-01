@@ -1,0 +1,10 @@
+- name: virtual machine creation
+  hosts: hypervisor
+  vars_files:
+    - ./vars/cloud-config.yml
+  become: true
+  roles:
+    - role: cloud-config
+      tags: config,iso
+    - role: virt
+      tags: vm,virt

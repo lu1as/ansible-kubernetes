@@ -1,0 +1,10 @@
+cluster_name: kubernetes
+kube_tld: kube.examle.de
+kube_dns_domain: cluster.local
+pki_country: DE
+pki_state: Hessen
+pki_city: Frankfurt
+#pki_tld: de
+pki_master_cluster_ip: 172.17.0.1
+pki_dir: /etc/kubernetes/pki
+#cert_folder:

@@ -1,0 +1,5 @@
+virt_atomic_image: https://getfedora.org/atomic_qcow2_latest
+virt_drives_dir: /mnt/drives
+virt_images_dir: /mnt/images
+virt_image: atomic-latest.qcow2
+virt_lvm_vg: /dev/raid1

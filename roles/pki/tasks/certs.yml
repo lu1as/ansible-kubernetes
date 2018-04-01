@@ -1,0 +1,23 @@
+- name: "create config for {{hostvars[item].ansible_hostname}}"
+  template:
+    src: openssl.config.j2
+    dest: "{{pki_dir}}/configs/{{hostvars[item].ansible_hostname}}.config"
+  register: cert_config
+
+- name: "create key and csr for {{hostvars[item].ansible_hostname}}"
+  shell: |
+    openssl req -newkey rsa:4096 -nodes \
+    -keyout {{pki_dir}}/keys/{{hostvars[item].ansible_hostname}}.key \
+    -out {{pki_dir}}/requests/{{hostvars[item].ansible_hostname}}.csr \
+    -config {{pki_dir}}/configs/{{hostvars[item].ansible_hostname}}.config
+  args:
+    creates: "{{pki_dir}}/requests/{{hostvars[item].ansible_hostname}}.csr"
+
+- name: "create certificate for {{hostvars[item].ansible_hostname}}"
+  shell: |
+    openssl x509 -req -in {{pki_dir}}/requests/{{hostvars[item].ansible_hostname}}.csr \
+    -CA {{pki_dir}}/certs/ca.crt -CAkey {{pki_dir}}/keys/ca.key -CAcreateserial \
+    -out {{pki_dir}}/certs/{{hostvars[item].ansible_hostname}}.crt -extensions v3_req \
+    -extfile {{pki_dir}}/configs/{{hostvars[item].ansible_hostname}}.config -days 3650
+  args:
+    creates: "{{pki_dir}}/certs/{{hostvars[item].ansible_hostname}}.crt"

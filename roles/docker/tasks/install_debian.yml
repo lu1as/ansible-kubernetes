@@ -1,0 +1,36 @@
+- name: install requirements
+  apt:
+    name: "{{item}}"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+
+- name: install repo key
+  apt_key:
+    id: 0EBFCD88
+    url: "https://download.docker.com/linux/{{ansible_lsb.id|lower}}/gpg"
+
+- name: install repo
+  apt_repository:
+    repo: "deb [arch={{docker_arch | default(ansible_architecture)}}] https://download.docker.com/linux/{{ansible_lsb.id|lower}} {{ansible_distribution_release}} stable"
+    filename: docker-ce
+
+- name: install
+  apt:
+    name: docker-ce
+    update_cache: true
+
+- name: create docker dropin directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: patch docker service
+  copy:
+    src: docker-dropin.conf
+    dest: /etc/systemd/system/docker.service.d/10-note-env-vars.conf
+  notify:
+    - restart docker
