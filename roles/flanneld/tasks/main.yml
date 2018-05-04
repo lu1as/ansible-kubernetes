@@ -1,12 +1,12 @@
 # install
-- name: install (Fedora)
+- name: install (Atomic)
   atomic_container:
     name: flanneld
     image: "{{flanneld_image}}"
     backend: ostree
     state: latest
     mode: system
-  when: ansible_distribution == 'Fedora'
+  when: is_atomic | default(false)
 
 - name: install (Debian)
   include_tasks: install_debian.yml
@@ -16,6 +16,23 @@
   file:
     path: "{{flanneld_config_folder}}"
     state: directory
+
+- name: modify firewall
+  iptables:
+    chain: FORWARD
+    in_interface: flannel.1
+    jump: ACCEPT
+- iptables:
+    chain: FORWARD
+    out_interface: flannel.1
+    jump: ACCEPT
+
+- name: make firewall modifications permanent (Atomic)
+  template:
+    src: iptables.save.j2
+    dest: /etc/sysconfig/iptables
+  notify: enable iptables
+  when: is_atomic | default(false)
 
 # pki
 - include_role:
