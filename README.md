@@ -3,15 +3,15 @@
 ansible role collection to setup a kubernetes cluster
 
 Compatible with:
-- Fedora Atomic 27
+- Fedora Atomic 27/28
 - Raspbian 9
 
-Hypervisor support for libvirt and KVM
+Hypervisor support for libvirt with KVM
 
 ## Setup
 
 - create an inventory in `inventories/` based on the sample
-- for vitual machines create a `cloud-config.yml` file in `vars/`
+- for virtual machines create a `cloud-config.yml` file in `vars/`
 
 ## Create virtual machines
 

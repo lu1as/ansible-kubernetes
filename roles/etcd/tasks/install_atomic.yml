@@ -1,0 +1,8 @@
+- name: install via system container
+  atomic_container:
+    name: etcd
+    image: "{{etcd_image}}"
+    backend: ostree
+    state: latest
+    mode: system
+  when: not rpm_ostree_etcd | default(false)

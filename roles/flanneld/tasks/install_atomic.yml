@@ -1,0 +1,15 @@
+- name: install via system container
+  atomic_container:
+    name: flanneld
+    image: "{{flanneld_image}}"
+    backend: ostree
+    state: latest
+    mode: system
+  when: not rpm_ostree_flanneld | default(false)
+
+- name: make firewall modifications permanent
+  template:
+    src: iptables.save.j2
+    dest: /etc/sysconfig/iptables
+  notify: enable iptables
+  when: not rpm_ostree_flanneld | default(false)

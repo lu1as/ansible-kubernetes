@@ -3,3 +3,13 @@
 
 - name: disable selinux
   shell: setenforce 0
+
+# FIX this
+- name: reboot
+  shell: reboot
+  notify: wait
+
+- name: wait for host
+  wait_for:
+    host: "{{ansible_ssh_host}}"
+  connection: local
