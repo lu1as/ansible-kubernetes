@@ -1,6 +1,6 @@
 # install
 - include_tasks: install_atomic.yml
-  when: is_atomic | default(false)
+  when: is_atomic | default(false) and not rpm_ostree_kubernetes | default(false)
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'

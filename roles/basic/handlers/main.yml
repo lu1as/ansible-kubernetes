@@ -9,7 +9,7 @@
   shell: sleep 1 && reboot
   async: 1
   poll: 0
-  notify: wait
+  notify: wait for host
 
 - name: wait for host
   wait_for:

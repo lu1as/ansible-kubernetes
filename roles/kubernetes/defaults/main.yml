@@ -3,6 +3,7 @@ kube_tld: kube.examle.de
 kube_config_folder: /etc/kubernetes
 kube_cert_folder: "{{kube_config_folder}}/certs"
 kube_allow_privileged_containers: "true"
+kube_taint_master: true
 
 # cgroups
 kube_kubelet_reserved_cpu: 100m
@@ -18,8 +19,6 @@ kube_dns: 172.17.0.2
 kube_dns_domain: cluster.local
 
 # images
-kube_master_image: registry.fedoraproject.org/f28/kubernetes-master
-kube_node_image: registry.fedoraproject.org/f28/kubernetes-node
 kube_apiserver_image: registry.fedoraproject.org/f27/kubernetes-apiserver
 kube_controller_manager_image: registry.fedoraproject.org/f27/kubernetes-controller-manager
 kube_scheduler_image: registry.fedoraproject.org/f27/kubernetes-scheduler

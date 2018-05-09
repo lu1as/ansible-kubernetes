@@ -14,8 +14,3 @@
     daemon_reload: true
   notify: restart docker
   when: "'kube_minions' in group_names"
-
-- name: enable iptables
-  systemd:
-    name: iptables
-    enabled: true

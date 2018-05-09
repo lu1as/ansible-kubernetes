@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 # kube-proxy config
 
-{% if ansible_distribution_major_version == '28' %}
-# FIX for github.com/kubernetes/kubernetes/issues/58956
+{% if ansible_distribution_major_version == '28' and rpm_ostree_kubernetes | default(false) %}
+# FIX: github.com/kubernetes/kubernetes/issues/58956
 KUBE_PROXY_ARGS=--proxy-mode=userspace
 {% endif %}

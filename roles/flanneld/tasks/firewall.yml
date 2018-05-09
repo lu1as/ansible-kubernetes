@@ -10,9 +10,15 @@
     out_interface: flannel.1
     jump: ACCEPT
 
-- name: persist firewall modifications
-  template:
-    src: iptables.save.j2
-    dest: /etc/sysconfig/iptables
-  notify: enable iptables
+- block:
+  - name: persist firewall modifications
+    template:
+      src: iptables.save.j2
+      dest: /etc/sysconfig/iptables
+  
+  - name: enable iptables
+    systemd:
+      name: iptables
+      enabled: true
+
   when: is_atomic | default(false)
