@@ -1,1 +1,4 @@
+# {{ ansible_managed }}
+# kube-controller-manager config
+
 KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file={{kube_cert_folder}}/node.key --root-ca-file={{kube_cert_folder}}/ca.crt"

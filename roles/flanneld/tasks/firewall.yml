@@ -1,0 +1,18 @@
+- name: allow FORWARD from flanneld interface
+  iptables:
+    chain: FORWARD
+    in_interface: flannel.1
+    jump: ACCEPT
+
+- name: allow FORWARD to flanneld interface
+  iptables:
+    chain: FORWARD
+    out_interface: flannel.1
+    jump: ACCEPT
+
+- name: persist firewall modifications
+  template:
+    src: iptables.save.j2
+    dest: /etc/sysconfig/iptables
+  notify: enable iptables
+  when: is_atomic | default(false)

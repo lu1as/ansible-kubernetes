@@ -7,21 +7,15 @@
   include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'
 
-# firewall
-- name: modify firewall
-  iptables:
-    chain: FORWARD
-    in_interface: flannel.1
-    jump: ACCEPT
-- iptables:
-    chain: FORWARD
-    out_interface: flannel.1
-    jump: ACCEPT
-
 - name: create config directory
   file:
     path: "{{flanneld_config_folder}}"
     state: directory
+
+# firewall
+- name: setup firewall
+  include_tasks: firewall.yml
+  when: flanneld_configure_firewall
 
 # pki
 - include_role:

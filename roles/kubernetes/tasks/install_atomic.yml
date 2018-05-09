@@ -1,82 +1,69 @@
 # master only block
 - block:
-  - name: install kubernetes-master
-    atomic_container:
-      name: kubernetes-master
-      image: "{{kube_master_image}}"
-      backend: ostree
-      state: latest
-      mode: system
-    when: ansible_distribution_major_version == 28
+  # kubernetes-master is not a system image
+  # - name: install kubernetes-master (Atomic 28)
+  #   atomic_container:
+  #     name: kubernetes-master
+  #     image: "{{kube_master_image}}"
+  #     backend: ostree
+  #     state: latest
+  #     mode: system
+  #   when: ansible_distribution_major_version == '28'
 
-  - name: install kube-apiserver
+  - name: install kubernetes master components (Atomic 27)
     atomic_container:
-      name: kube-apiserver
-      image:  "{{kube_apiserver_image}}"
+      name: "{{item.name}}"
+      image:  "{{item.image}}"
       backend: ostree
       state: latest
       mode: system
-    when: ansible_distribution_major_version == 27
-
-  - name: install kube-controller-manager
-    atomic_container:
-      name: kube-controller-manager
-      image:  "{{kube_controller_manager_image}}"
-      backend: ostree
-      state: latest
-      mode: system
-    when: ansible_distribution_major_version == 27
-
-  - name: install kube-scheduler
-    atomic_container:
-      name: kube-scheduler
-      image: "{{kube_scheduler_image}}"
-      backend: ostree
-      state: latest
-      mode: system
-    when: ansible_distribution_major_version == 27
+    with_items:
+      - name: kube-apiserver
+        image: "{{kube_apiserver_image}}"
+      - name: kube-controller-manager
+        image:  "{{kube_controller_manager_image}}"
+      - name: kube-scheduler
+        image: "{{kube_scheduler_image}}"
+    when: ansible_distribution_major_version == '27'
 
   # FIX: Unable to find suitable network address.error='No default routes.'.
   - name: patch kube-apiserver service
     file:
       path: /etc/systemd/system/kube-apiserver.service.d
       state: directory
-    when: ansible_distribution_major_version == 27
+    when: ansible_distribution_major_version == '27'
   - copy:
       src: kube-apiserver-dropin.conf
       dest: /etc/systemd/system/kube-apiserver.service.d/override.conf
     notify: systemd reload
-    when: ansible_distribution_major_version == 27
+    when: ansible_distribution_major_version == '27'
 
   when: "'kube_masters' in group_names and not rpm_ostree_kubernetes | default(false)"
 
 # minion only block
 - block:
-  - name: install kubernetes-node
-    atomic_container:
-      name: kubernetes-node
-      image: "{{kube_node_image}}"
-      backend: ostree
-      state: latest
-      mode: system
-    when: ansible_distribution_major_version == 28
+  # kubernetes-node is not a system image
+  # - name: install kubernetes-node (Atomic 28)
+  #   atomic_container:
+  #     name: kubernetes-node
+  #     image: "{{kube_node_image}}"
+  #     backend: ostree
+  #     state: latest
+  #     mode: system
+  #   when: ansible_distribution_major_version == '28'
 
-  - name: install kubelet
+  - name: install kubernetes minion components (Atomic 27)
     atomic_container:
       name: kubelet
       image: "{{kube_kubelet_image}}"
       backend: ostree
       state: latest
       mode: system
-    when: ansible_distribution_major_version == 27
-
-  - name: install kube-proxy
-    atomic_container:
-      name: kube-proxy
-      image: "{{kube_proxy_image}}"
-      backend: ostree
-      state: latest
-      mode: system
-    when: ansible_distribution_major_version == 27
+    with_items:
+      - name: kubelet
+        image: "{{kube_kubelet_image}}"
+      - name: kube-proxy
+        image:  "{{kube_proxy_image}}"
+    when: ansible_distribution_major_version == '27'
 
   when: "'kube_minions' in group_names and not rpm_ostree_kubernetes | default(false)" 
