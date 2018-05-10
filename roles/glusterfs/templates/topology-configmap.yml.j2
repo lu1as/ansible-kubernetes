@@ -1,0 +1,33 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: heketi-topology
+  namespace: storage
+data:
+  topology.json: |
+    {
+        "clusters": [
+            {
+                "nodes": [
+{% for node in glusterfs_peers %}
+                    {
+                        "node": {
+                            "hostnames": {
+                                "manage": [
+                                    "{{hostvars[node].ansible_nodename}}"
+                                ],
+                                "storage": [
+                                    "{{hostvars[node].ansible_default_ipv4.address}}"
+                                ]
+                            },
+                            "zone": 1
+                        },
+                        "devices": [
+                            "{{glusterfs_drive}}"
+                        ]
+                    }{% if not loop.last %},{% endif %}
+{% endfor %}
+                ]
+            }
+        ]
+    }

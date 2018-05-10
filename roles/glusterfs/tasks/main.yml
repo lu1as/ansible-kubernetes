@@ -1,0 +1,2 @@
+- include_tasks: install_atomic.yml
+  when: is_atomic | default(false) and not rpm_ostree_glusterfs | default(false)

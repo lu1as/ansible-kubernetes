@@ -1,0 +1,2 @@
+glusterfs_drive: /dev/vdc
+glusterfs_server_version: 4.0.1

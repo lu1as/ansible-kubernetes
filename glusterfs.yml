@@ -1,0 +1,6 @@
+- name: glusterfs
+  hosts: glusterfs_peers
+  become: true
+  roles:
+    - role: glusterfs
+      tags: glusterfs

@@ -20,6 +20,9 @@ kube_tld=kube.examle.de
 master1
 minion1
 
+[atomic:vars]
+ansible_user=fedora
+
 # install atomic packages via rpm-ostree
 [atomic_rpm_ostree]
 master1
@@ -35,6 +38,11 @@ minion1
 cpu_cores=2
 memory_size_gib=2
 data_size=10g
+
+[glusterfs_peers]
+
+[glusterfs_peers:vars]
+glusterfs_size=10g
 
 [pki_certs]
 master1
