@@ -20,7 +20,12 @@ master1
 minion1
 
 [virtual_machines]
-# needs special hostvars: vm_name=k8s-master1 cpu_cores=1 memory_size_gib=2 data_size=10g mac_address="XX:XX:XX:XX:XX:XX"
+# needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
+
+[virtual_machines:vars]
+cpu_cores=2
+memory_size_gib=2
+data_size=10g
 
 [pki_certs]
 master1

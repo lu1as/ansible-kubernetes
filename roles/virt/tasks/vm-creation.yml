@@ -1,8 +1,17 @@
+- name: check for previous system image
+  stat:
+    path: "{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2"
+  register: system_image
+
 - name: copy system image
   copy:
     remote_src: true
     src: "{{virt_drives_dir}}/{{virt_image}}"
     dest: "{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2"
+    owner: libvirt-qemu
+    group: libvirt-qemu
+    mode: 0600
+  when: not system_image.stat.exists
 
 - name: create lvm data partition
   lvol:

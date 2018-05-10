@@ -1,4 +1,4 @@
-- name: install {{rpm_ostree_package}} via rpm-ostree
+- name: install {{rpm_ostree_package}}
   shell: "rpm-ostree install {{rpm_ostree_package}}"
   args:
     creates: "{{rpm_ostree_binary_path}}"
