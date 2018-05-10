@@ -1,0 +1,5 @@
+- name: install {{rpm_ostree_package}} via rpm-ostree
+  shell: "rpm-ostree install {{rpm_ostree_package}}"
+  args:
+    creates: "{{rpm_ostree_binary_path}}"
+  notify: reboot

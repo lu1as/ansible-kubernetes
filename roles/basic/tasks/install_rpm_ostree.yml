@@ -1,27 +1,31 @@
-- name: install flannel via rpm-ostree
-  shell: rpm-ostree install flannel
-  args:
-    creates: /usr/bin/flanneld
-  notify: reboot
+- name: install flanneld via rpm-ostree
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: flannel
+    rpm_ostree_binary_path: /usr/bin/flanneld
   when: rpm_ostree_flanneld | default(false)
 
 - name: install etcd via rpm-ostree
-  shell: rpm-ostree install etcd
-  args:
-    creates: /usr/bin/etcd
-  notify: reboot
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: etcd
+    rpm_ostree_binary_path: /usr/bin/etcd
   when: "'kube_masters' in group_names and rpm_ostree_etcd | default(false)"
 
 - name: install kubernetes-master via rpm-ostree
-  shell: rpm-ostree install kubernetes-master
-  args:
-    creates: /usr/bin/kube-apiserver
-  notify: reboot
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: kubernetes-master
+    rpm_ostree_binary_path: /usr/bin/kube-apiserver
   when: "'kube_masters' in group_names and rpm_ostree_kubernetes | default(false)"
 
 - name: install kubernetes-node via rpm-ostree
-  shell: rpm-ostree install kubernetes-node
-  args:
-    creates: /usr/bin/kubelet
-  notify: reboot
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: kubernetes-node
+    rpm_ostree_binary_path: /usr/bin/kubelet
   when: "'kube_minions' in group_names and rpm_ostree_kubernetes | default(false)"

@@ -21,6 +21,11 @@
       dest: "{{etcd_config_folder}}/etcd.conf"
     notify: restart etcd
 
+  - name: enable etcd
+    systemd:
+      name: etcd
+      enabled: true
+
   - meta: flush_handlers
 
   when: "'etcd_servers' in group_names"

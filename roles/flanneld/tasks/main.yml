@@ -61,4 +61,9 @@
     - restart flanneld on minions
   when: ansible_os_family == 'Debian'
 
+- name: enable flanneld
+  systemd:
+    name: flanneld
+    enabled: true
+
 - meta: flush_handlers

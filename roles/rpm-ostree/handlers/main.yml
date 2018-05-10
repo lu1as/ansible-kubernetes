@@ -1,9 +1,3 @@
-- name: update ca trust
-  shell: /bin/update-ca-trust
-
-- name: disable selinux
-  shell: setenforce 0
-
 - name: reboot
   shell: sleep 1 && reboot
   async: 1
