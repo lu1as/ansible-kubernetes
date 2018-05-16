@@ -11,4 +11,4 @@ KUBE_ALLOW_PRIV="--allow-privileged={{kube_allow_privileged_containers}}"
 KUBE_MASTER="--kubeconfig={{kube_config_folder}}/kubeconfig"
 
 # Comma separated list of nodes in the etcd cluster
-KUBE_ETCD_SERVERS="--etcd_servers={% for server in groups['etcd_servers'] %}https://{{hostvars[server].ansible_hostname}}.{{kube_tld}}:{{etcd_port}}{% if not loop.last %},{% endif %}{% endfor %} --etcd-cafile={{etcd_cert_folder}}/ca.crt --etcd-certfile={{etcd_cert_folder}}/node.crt --etcd-keyfile={{etcd_cert_folder}}/node.key"
+KUBE_ETCD_SERVERS="--etcd-servers={% for server in groups['etcd_servers'] %}https://{{hostvars[server].ansible_hostname}}.{{kube_tld}}:{{etcd_port}}{% if not loop.last %},{% endif %}{% endfor %} --etcd-cafile={{etcd_cert_folder}}/ca.crt --etcd-certfile={{etcd_cert_folder}}/node.crt --etcd-keyfile={{etcd_cert_folder}}/node.key"
