@@ -25,6 +25,7 @@
       src: kube-apiserver-dropin.conf
       dest: /etc/systemd/system/kube-apiserver.service.d/override.conf
     notify: systemd reload
+    when: ansible_distribution_major_version == '27'
 
   when: "'kube_masters' in group_names"
 

@@ -1,5 +1,16 @@
-- name: install {{rpm_ostree_package}}
+- name: "check {{rpm_ostree_package}} version"
+  shell: "{{rpm_ostree_binary_path}} --version"
+  ignore_errors: true
+  changed_when: false
+  register: rpm_ostree_current_version
+
+- name: "install {{rpm_ostree_package}} version {{rpm_ostree_version}}"
+  shell: "rpm-ostree install {{rpm_ostree_package}}-{{rpm_ostree_version}}"
+  when: "rpm_ostree_version != '' and
+        rpm_ostree_version not in rpm_ostree_current_version.stdout"
+  notify: reboot
+
+- name: "install {{rpm_ostree_package}}"
   shell: "rpm-ostree install {{rpm_ostree_package}}"
-  args:
-    creates: "{{rpm_ostree_binary_path}}"
+  when: "rpm_ostree_version == ''"
   notify: reboot

@@ -1,5 +1,5 @@
 # install
-- include_tasks: install_atomic.yml
+- include_tasks: install_atomic_containers.yml
   when: is_atomic | default(false) and not rpm_ostree_kubernetes | default(false)
 
 - include_tasks: install_debian.yml

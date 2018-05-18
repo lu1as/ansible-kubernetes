@@ -1,6 +1,3 @@
 is_atomic: true
 ansible_user: fedora
-rpm_ostree_flanneld: true
-rpm_ostree_etcd: true
-rpm_ostree_kubernetes: true
 flanneld_configure_firewall: true
