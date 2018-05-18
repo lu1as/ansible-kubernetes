@@ -13,14 +13,28 @@ hypervisor ansible_host=1.1.1.1
 kube_context=kube-cluster
 # kubernetes top-level-domain
 kube_tld=kube.examle.de
-ansible_user=ansible
+# Fedora Atomic qcow2 image to pin os version
+# virt_atomic_image=https://getfedora.org/atomic_qcow2_latest
 
 [atomic]
 master1
 minion1
 
+# install atomic packages via rpm-ostree
+[atomic_rpm_ostree]
+master1
+minion1
+
+# install atomic packages via containers
+[atomic_containers]
+
 [virtual_machines]
-# needs special hostvars: vm_name=k8s-master1 cpu_cores=1 memory_size_gib=2 data_size=10g mac_address="XX:XX:XX:XX:XX:XX"
+# needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
+
+[virtual_machines:vars]
+cpu_cores=2
+memory_size_gib=2
+data_size=10g
 
 [pki_certs]
 master1

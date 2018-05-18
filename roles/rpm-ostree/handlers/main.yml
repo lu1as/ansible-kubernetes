@@ -1,0 +1,12 @@
+- name: reboot
+  shell: sleep 1 && reboot
+  async: 1
+  poll: 0
+  notify: wait for host
+
+- name: wait for host
+  wait_for:
+    port: 22
+    host: "{{ansible_ssh_host}}"
+  connection: local
+  become: false

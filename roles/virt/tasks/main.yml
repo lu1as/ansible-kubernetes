@@ -1,8 +1,16 @@
+- name: verify Atomic hosts
+  debug:
+    msg: virtual machine is a Atomic host
+  when: "'atomic' in hostvars[item].group_names"
+  with_items: "{{groups.virtual_machines}}"
+
 - name: download latest atomic image
   get_url:
     url: "{{virt_atomic_image}}"
     dest: "{{virt_drives_dir}}/{{virt_image}}"
     mode: 0644
+    owner: libvirt-qemu
+    group: libvirt-qemu
 
 - name: install python-libvirt
   apt:

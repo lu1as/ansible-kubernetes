@@ -1,12 +1,7 @@
 - block:
   # install
   - name: install (Atomic)
-    atomic_container:
-      name: etcd
-      image: "{{etcd_image}}"
-      backend: ostree
-      state: latest
-      mode: system
+    include_tasks: install_atomic.yml
     when: is_atomic | default(false)
 
   - name: install (Debian)
@@ -25,6 +20,11 @@
       src: etcd.j2
       dest: "{{etcd_config_folder}}/etcd.conf"
     notify: restart etcd
+
+  - name: enable etcd
+    systemd:
+      name: etcd
+      enabled: true
 
   - meta: flush_handlers
 

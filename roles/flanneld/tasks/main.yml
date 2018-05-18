@@ -1,12 +1,7 @@
 # install
-- name: install (Fedora)
-  atomic_container:
-    name: flanneld
-    image: "{{flanneld_image}}"
-    backend: ostree
-    state: latest
-    mode: system
-  when: ansible_distribution == 'Fedora'
+- name: install (Atomic)
+  include_tasks: install_atomic.yml
+  when: is_atomic | default(false)
 
 - name: install (Debian)
   include_tasks: install_debian.yml
@@ -16,6 +11,11 @@
   file:
     path: "{{flanneld_config_folder}}"
     state: directory
+
+# firewall
+- name: setup firewall
+  include_tasks: firewall.yml
+  when: flanneld_configure_firewall
 
 # pki
 - include_role:
@@ -33,7 +33,7 @@
 
   - name: upload cluster config to etcd
     shell: |
-      /usr/local/bin/etcdctl --endpoints https://{{ansible_hostname}}.{{kube_tld}}:{{etcd_port}} \
+      etcdctl --endpoints https://{{ansible_hostname}}.{{kube_tld}}:{{etcd_port}} \
       --ca-file {{etcd_cert_folder}}/ca.crt \
       --cert-file {{etcd_cert_folder}}/node.crt \
       --key-file {{etcd_cert_folder}}/node.key \
@@ -60,5 +60,10 @@
     - restart flanneld on masters
     - restart flanneld on minions
   when: ansible_os_family == 'Debian'
+
+- name: enable flanneld
+  systemd:
+    name: flanneld
+    enabled: true
 
 - meta: flush_handlers
