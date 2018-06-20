@@ -6,8 +6,8 @@ flanneld_configure_firewall: false
 flanneld_config_folder: /etc/flanneld
 flanneld_cert_folder: "{{flanneld_config_folder}}/certs"
 flanneld_image: registry.fedoraproject.org/f27/flannel
-flanneld_download_version: v0.10.0
-#flanneld_arch:
+flanneld_download_version: 0.10.0
+flanneld_arch: amd64
 
 # etcd
 etcd_cert_folder: "{{flanneld_cert_folder}}"

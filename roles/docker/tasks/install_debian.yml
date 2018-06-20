@@ -10,12 +10,11 @@
 
 - name: install repo key
   apt_key:
-    id: 0EBFCD88
     url: "https://download.docker.com/linux/{{ansible_lsb.id|lower}}/gpg"
 
 - name: install repo
   apt_repository:
-    repo: "deb [arch={{docker_arch | default(ansible_architecture)}}] https://download.docker.com/linux/{{ansible_lsb.id|lower}} {{ansible_distribution_release}} stable"
+    repo: "deb [arch={{docker_arch}}] https://download.docker.com/linux/{{ansible_lsb.id|lower}} {{ansible_distribution_release}} stable"
     filename: docker-ce
 
 - name: install

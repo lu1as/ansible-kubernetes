@@ -7,10 +7,6 @@
 - name: "install {{rpm_ostree_package}} version {{rpm_ostree_version}}"
   shell: "rpm-ostree install {{rpm_ostree_package}}-{{rpm_ostree_version}}"
   when: "rpm_ostree_version != '' and
-        rpm_ostree_version not in rpm_ostree_current_version.stdout"
-  notify: reboot
-
-- name: "install {{rpm_ostree_package}}"
-  shell: "rpm-ostree install {{rpm_ostree_package}}"
-  when: "rpm_ostree_version == ''"
+        rpm_ostree_version not in rpm_ostree_current_version.stdout and
+        rpm_ostree_version not in rpm_ostree_current_version.stderr"
   notify: reboot

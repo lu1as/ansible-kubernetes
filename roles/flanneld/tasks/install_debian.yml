@@ -7,7 +7,7 @@
 
 - name: "install ({{flanneld_arch | default(ansible_architecture)}})"
   get_url:
-    url: "https://github.com/coreos/flannel/releases/download/{{flanneld_download_version}}/flanneld-{{flanneld_arch | default(ansible_architecture)}}"
+    url: "https://github.com/coreos/flannel/releases/download/v{{flanneld_download_version}}/flanneld-{{flanneld_arch}}"
     dest: "/usr/local/bin/flanneld"
     remote_src: true
     mode: +x
