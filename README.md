@@ -5,6 +5,7 @@ ansible role collection to setup a kubernetes cluster
 Compatible with:
 - Fedora Atomic 27/28
 - Raspbian 9
+- Debian 9 (Stretch)
 
 Hypervisor support for libvirt with KVM
 

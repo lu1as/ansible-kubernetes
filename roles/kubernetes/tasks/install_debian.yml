@@ -11,7 +11,7 @@
   - block:
     - name: "download kubernetes-server ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/{{kube_download_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
   
@@ -61,7 +61,7 @@
   - block:
     - name: "download kubernetes-node ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/{{kube_download_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
 
@@ -88,6 +88,11 @@
       dest: /etc/systemd/system/docker.service.d/30-systemd-cgroup-driver.conf
     notify:
       - restart docker
+
+  - name: create kubelet lib
+    file:
+      path: /var/lib/kubelet
+      state: directory
 
   # minion services
   - name: create kubernetes-node services
