@@ -1,0 +1,88 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: heketi
+  namespace: storage
+  labels:
+    app: heketi
+    deploy-heketi: support
+spec:
+  selector:
+    app: heketi
+  ports:
+  - name: heketi
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: heketi-service-account
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: heketi
+  namespace: storage
+  labels:
+    app: heketi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels: 
+        app: heketi
+    spec:
+      serviceAccountName: heketi-service-account
+      containers:
+      - image: heketi/heketi
+        name: heketi
+        env:
+        # glusterfs pods need label 'glusterfs-node = pod'
+        - name: HEKETI_KUBE_GLUSTER_DAEMONSET
+          value: "y"
+        - name: HEKETI_SNAPSHOT_LIMIT
+          value: "14"
+        - name: HEKETI_KUBE_NAMESPACE
+          value: storage
+        - name: HEKETI_FSTAB
+          value: /var/lib/heketi/fstab
+        - name: HEKETI_KUBE_DB_SECRET_NAME
+          value: heketi-db-backup
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: heketi-config
+          mountPath: /etc/heketi
+        - name: heketi-lib
+          mountPath: /var/lib/heketi
+        - name: heketi-db-backup
+          mountPath: /backupdb
+        - name: heketi-topology
+          mountPath: /tmp/topology
+        readinessProbe:
+          timeoutSeconds: 3
+          initialDelaySeconds: 3
+          httpGet:
+            path: /hello
+            port: 8080
+        livenessProbe:
+          timeoutSeconds: 3
+          initialDelaySeconds: 30
+          httpGet:
+            path: /hello
+            port: 8080
+      volumes:
+      - name: heketi-lib
+        # hostPath:
+        #   path: /var/lib/heketi
+      - name: heketi-config
+        secret:
+          secretName: heketi-config-secret
+      - name: heketi-db-backup
+        secret:
+          secretName: heketi-db-backup
+      - name: heketi-topology
+        configMap:
+          name: heketi-topology

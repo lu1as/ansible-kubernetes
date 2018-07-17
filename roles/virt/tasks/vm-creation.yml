@@ -19,6 +19,13 @@
     lv: "{{hostvars[item].vm_name}}-data"
     size: "{{hostvars[item].data_size}}"
 
+- name: create lvm glusterfs partition
+  lvol:
+    vg: "{{virt_lvm_vg}}"
+    lv: "{{hostvars[item].vm_name}}-glusterfs"
+    size: "{{hostvars[item].glusterfs_size}}"
+  when: "'glusterfs_peers' in hostvars[item].group_names"
+
 # - name: set static dhcp address
 #   shell: |
 #       virsh net-update default add ip-dhcp-host \

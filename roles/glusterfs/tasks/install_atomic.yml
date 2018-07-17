@@ -1,0 +1,15 @@
+- name: install glusterfs-server via rpm-ostree
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: "glusterfs-server-{{glusterfs_server_version}}"
+    rpm_ostree_binary_path: /usr/bin/glusterfind
+
+- meta: flush_handlers
+
+- name: enable glusterd
+  systemd:
+    name: glusterd
+    enabled: true
+  notify: restart glusterd
+  when: rpm_ostree_glusterfs | default(false)
