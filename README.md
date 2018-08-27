@@ -3,7 +3,7 @@
 ansible role collection to setup a kubernetes cluster
 
 Compatible with:
-- Fedora Atomic 27/28
+- Fedora Atomic 28
 - Raspbian 9
 - Debian 9 (Stretch)
 
@@ -21,10 +21,6 @@ Hypervisor support for libvirt with KVM
 ## Install kubernetes
 
     ansible-playbook -i inventories/<env> kubernetes.yml
-
-### Fix firewall after reboot (Fedora Atomic)
-
-    ansible-playbook -i inventories/<env> kubernetes.yml --tags firewall
 
 ## Configure kubectl client
 
