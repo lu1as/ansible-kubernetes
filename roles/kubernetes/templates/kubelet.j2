@@ -5,10 +5,10 @@
 KUBELET_ADDRESS="--address=0.0.0.0"
 
 # You may leave this blank to use the actual hostname
-# KUBELET_HOSTNAME="--hostname-override={{ansible_hostname}}.{{kube_tld}}"
+# KUBELET_HOSTNAME="--hostname-override={{inventory_hostname}}.{{kube_domain}}"
 
 # location of the api-server
 KUBELET_API_SERVER="--kubeconfig={{kube_config_folder}}/kubeconfig"
 
 # Add your own!
-KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns={{kube_dns}} --cluster-domain={{kube_dns_domain}} --kube-reserved=cpu={{kube_kubelet_reserved_cpu}},memory={{kube_kubelet_reserved_memory}} --system-reserved=cpu={{kube_system_reserved_cpu}},memory={{kube_system_reserved_memory}} {% if 'kube_masters' in group_names %}--node-labels=node-role.kubernetes.io/master {% if kube_taint_master %}--register-with-taints=node-role.kubernetes.io/master=:NoSchedule{% endif %}{% else %}--node-labels=node-role.kubernetes.io/minion{% endif %}"
+KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns={{kube_dns}} --cluster-domain={{kube_internal_domain}} --kube-reserved=cpu={{kube_kubelet_reserved_cpu}},memory={{kube_kubelet_reserved_memory}} --system-reserved=cpu={{kube_system_reserved_cpu}},memory={{kube_system_reserved_memory}} {% if 'kube_masters' in group_names %}--node-labels=node-role.kubernetes.io/master {% if kube_taint_master %}--register-with-taints=node-role.kubernetes.io/master=:NoSchedule{% endif %}{% else %}--node-labels=node-role.kubernetes.io/minion{% endif %}"

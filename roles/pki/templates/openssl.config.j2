@@ -11,16 +11,16 @@ ST = {{pki_state}}
 L = {{pki_city}}
 O = {{pki_organization}}
 OU = kubernetes
-CN = {{hostvars[item].ansible_hostname}}.{{kube_tld}}
+CN = {{hostvars[item].inventory_hostname}}.{{kube_domain}}
 
 [v3_req]
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = {{hostvars[item].ansible_hostname}}.{{kube_tld}}
+DNS.1 = {{hostvars[item].inventory_hostname}}.{{kube_domain}}
 {% if item in groups['kube_masters'] %}
-DNS.2 = master.{{kube_tld}}
-DNS.3 = kubernetes.default.srv.{{kube_dns_domain}}
+DNS.2 = master.{{kube_domain}}
+DNS.3 = kubernetes.default.srv.{{kube_internal_domain}}
 DNS.4 = kubernetes.default.srv
 DNS.5 = kubernetes.default
 DNS.6 = kubernetes

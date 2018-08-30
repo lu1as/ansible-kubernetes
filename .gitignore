@@ -1,6 +1,6 @@
 *.swp
 *.retry
 inventories/*
-!inventories/sample
+!inventories/sample.yml
 vars/*
 !vars/cloud-config.sample.yml

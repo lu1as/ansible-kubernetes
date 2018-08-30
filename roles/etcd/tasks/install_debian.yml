@@ -63,12 +63,15 @@
 - name: create etcd user
   user:
     name: etcd
+    home: /var/lib/etcd
+    create_home: false
 
-- name: chown etcd lib
+- name: create etcd lib
   file:
     path: /var/lib/etcd
     owner: etcd
     group: etcd
+    mode: 0700
     state: directory
 
 - name: create service

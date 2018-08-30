@@ -9,16 +9,24 @@
     when: ansible_os_family == 'Debian'
 
   # pki
-  - include_role:
+  - name: copy pki
+    include_role:
       name: pki
     vars:
-      cert_folder: "{{etcd_cert_folder}}"
+      pki_dest_dir: "{{etcd_pki_dir}}"
+      pki_dest_dir_owner: etcd
+      pki_dest_dir_group: etcd
 
-  # config
+  # configure
+  - name: create config directory
+    file:
+      path: /etc/etcd
+      state: directory
+
   - name: copy config
     template:
       src: etcd.j2
-      dest: "{{etcd_config_folder}}/etcd.conf"
+      dest: "{{etcd_config_dir}}/etcd.conf"
     notify: restart etcd
 
   - name: enable etcd

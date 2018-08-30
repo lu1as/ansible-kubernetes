@@ -6,10 +6,13 @@
   when: ansible_os_family == 'Debian'
 
 # pki
-- include_role:
+- name: copy pki
+  include_role:
     name: pki
   vars:
-    cert_folder: "{{kube_cert_folder}}"
+    pki_dest_dir: "{{kube_pki_dir}}"
+    pki_dest_dir_owner: root
+    pki_dest_dir_group: kube
 
 # main config
 - name: copy main config

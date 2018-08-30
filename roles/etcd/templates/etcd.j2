@@ -1,23 +1,23 @@
 # etcd server configuration
-ETCD_NAME={{ansible_hostname}}
-ETCD_DATA_DIR="/var/lib/etcd/{{ansible_hostname}}.etcd"
+ETCD_NAME={{inventory_hostname}}
+ETCD_DATA_DIR="/var/lib/etcd/{{inventory_hostname}}.etcd"
 
 ETCD_LISTEN_CLIENT_URLS="https://0.0.0.0:{{etcd_port}}"
-ETCD_ADVERTISE_CLIENT_URLS="https://{{ansible_hostname}}.{{kube_tld}}:{{etcd_port}}"
+ETCD_ADVERTISE_CLIENT_URLS="https://{{inventory_hostname}}.{{kube_domain}}:{{etcd_port}}"
 
 ETCD_LISTEN_PEER_URLS="https://0.0.0.0:{{etcd_peer_port}}"
-ETCD_INITIAL_ADVERTISE_PEER_URLS="https://{{ansible_default_ipv4.address}}:{{etcd_peer_port}}"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="https://{{etcd_advertise_ip}}:{{etcd_peer_port}}"
 ETCD_INITIAL_CLUSTER_TOKEN="k8s-etcd-cluster"
-ETCD_INITIAL_CLUSTER="{% for server in groups['etcd_servers'] %}{{hostvars[server].ansible_hostname}}=https://{{hostvars[server].ansible_default_ipv4.address}}:{{etcd_peer_port}}{% if not loop.last %},{% endif %}{% endfor %}"
+ETCD_INITIAL_CLUSTER="{% for server in groups['etcd_servers'] %}{{hostvars[server].inventory_hostname}}=https://{{hostvars[server].etcd_advertise_ip | default(hostvars[server].ansible_default_ipv4.address)}}:{{etcd_peer_port}}{% if not loop.last %},{% endif %}{% endfor %}"
 ETCD_INITIAL_CLUSTER_STATE=new
 
 # security
 ETCD_CLIENT_CERT_AUTH="true"
-ETCD_TRUSTED_CA_FILE="{{etcd_cert_folder}}/ca.crt"
-ETCD_CERT_FILE="{{etcd_cert_folder}}/node.crt"
-ETCD_KEY_FILE="{{etcd_cert_folder}}/node.key"
+ETCD_TRUSTED_CA_FILE="{{etcd_pki_dir}}/certs/ca.crt"
+ETCD_CERT_FILE="{{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt"
+ETCD_KEY_FILE="{{etcd_pki_dir}}/keys/{{inventory_hostname}}.key"
 
 ETCD_PEER_CLIENT_CERT_AUTH="true"
-ETCD_PEER_TRUSTED_CA_FILE="{{etcd_cert_folder}}/ca.crt"
-ETCD_PEER_CERT_FILE="{{etcd_cert_folder}}/node.crt"
-ETCD_PEER_KEY_FILE="{{etcd_cert_folder}}/node.key"
+ETCD_PEER_TRUSTED_CA_FILE="{{etcd_pki_dir}}/certs/ca.crt"
+ETCD_PEER_CERT_FILE="{{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt"
+ETCD_PEER_KEY_FILE="{{etcd_pki_dir}}/keys/{{inventory_hostname}}.key"

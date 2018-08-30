@@ -4,24 +4,27 @@
   become: true
   when: ansible_os_family == 'RedHat'
 
-- include_role: 
+- name: fetch certificates
+  include_role: 
     name: pki
   vars:
-    cert_folder: "{{kubectl_cert_folder}}"
-    ansible_hostname: "client"
+    pki_dest_dir: "{{kubectl_cert_folder}}"
+    pki_dest_dir_owner: "{{ansible_user_id}}"
+    pki_dest_dir_group: "{{ansible_user_id}}"
+    inventory_hostname: client
 
 - name: set kubectl context
   shell: |
-    kubectl config set-cluster {{kube_context}}-cluster \
-    --server=https://master.{{kube_tld}}:{{kube_apiserver_port}} \
-    --certificate-authority={{kubectl_cert_folder}}/ca.crt
+    kubectl config set-cluster {{kube_cluster_name}}-cluster \
+    --server=https://master.{{kube_domain}}:{{kube_apiserver_port}} \
+    --certificate-authority={{kubectl_cert_folder}}/certs/ca.crt
 
-    kubectl config set-credentials {{kube_context}}-admin \
-    --client-certificate={{kubectl_cert_folder}}/node.crt \
-    --client-key={{kubectl_cert_folder}}/node.key
+    kubectl config set-credentials {{kube_cluster_name}}-admin \
+    --client-certificate={{kubectl_cert_folder}}/certs/client.crt \
+    --client-key={{kubectl_cert_folder}}/keys/client.key
 
-    kubectl config set-context {{kube_context}} \
-    --cluster={{kube_context}}-cluster \
-    --user={{kube_context}}-admin --namespace=default
+    kubectl config set-context {{kube_cluster_name}} \
+    --cluster={{kube_cluster_name}}-cluster \
+    --user={{kube_cluster_name}}-admin --namespace=default
   args:
     executable: /bin/bash

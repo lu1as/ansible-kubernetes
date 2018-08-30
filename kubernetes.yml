@@ -1,5 +1,7 @@
 - name: kubernetes
-  hosts: kube
+  hosts:
+    - kube_masters
+    - kube_minions
   become: true
   roles:
     - role: storage-setup

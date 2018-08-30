@@ -1,10 +1,14 @@
-kube_tld: kube.examle.de
-kube_dns_domain: cluster.local
+kube_domain: kube.examle.de
+kube_internal_domain: cluster.local
 
 pki_country: DE
 pki_state: Hessen
 pki_city: Frankfurt
 pki_organization: EXAMPLE.DE
-pki_master_cluster_ip: 172.17.0.1
-pki_dir: /etc/kubernetes/pki
-#cert_folder:
+pki_master: "{{groups['kube_masters'][0]}}"
+pki_dir: /root/kubernetes-pki
+
+# coping pki data to app config directory
+pki_dest_dir:
+pki_dest_dir_owner: root
+pki_dest_dir_group: root

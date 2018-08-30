@@ -1,2 +1,12 @@
-127.0.0.1 {{ansible_hostname}}.{{kube_tld}}
-::1       {{ansible_hostname}}.{{kube_tld}}
+127.0.0.1 {{ansible_hostname}}
+::1       {{ansible_hostname}}
+
+{{internal_ip}} {{inventory_hostname}}.{{kube_domain}}
+
+# kubernetes masters
+{% for master in groups.kube_masters %}
+{{hostvars[master].internal_ip | default(hostvars[master].ansible_default_ipv4.address)}} master.{{kube_domain}}
+{% endfor %}
+{% for master in groups.kube_masters %}{% if hostvars[master].inventory_hostname != inventory_hostname %}
+{{hostvars[master].internal_ip | default(hostvars[master].ansible_default_ipv4.address)}} {{hostvars[master].inventory_hostname}}.{{kube_domain}}
+{% endif %}{% endfor %}

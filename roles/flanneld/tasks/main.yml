@@ -9,7 +9,7 @@
 
 - name: create config directory
   file:
-    path: "{{flanneld_config_folder}}"
+    path: "{{flanneld_config_dir}}"
     state: directory
 
 # firewall
@@ -18,29 +18,30 @@
   when: flanneld_configure_firewall
 
 # pki
-- include_role:
+- name: copy pki
+  include_role:
     name: pki
   vars:
-    cert_folder: "{{flanneld_cert_folder}}"
+    pki_dest_dir: "{{flanneld_pki_dir}}"
 
 # network config
 - block:
   - name: copy cluster config
     template:
       src: flanneld-config.json.j2
-      dest: "{{flanneld_config_folder}}/flanneld-config.json"
+      dest: "{{flanneld_config_dir}}/flanneld-config.json"
     register: flanneld_config
 
   - name: upload cluster config to etcd
     shell: |
-      etcdctl --endpoints https://{{ansible_hostname}}.{{kube_tld}}:{{etcd_port}} \
-      --ca-file {{etcd_cert_folder}}/ca.crt \
-      --cert-file {{etcd_cert_folder}}/node.crt \
-      --key-file {{etcd_cert_folder}}/node.key \
-      set {{flanneld_network_name}}/network/config < {{flanneld_config_folder}}/flanneld-config.json
+      etcdctl --endpoints https://{{inventory_hostname}}.{{kube_domain}}:{{etcd_port}} \
+      --ca-file {{etcd_pki_dir}}//certs/ca.crt \
+      --cert-file {{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt \
+      --key-file {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key \
+      set {{flanneld_network_name}}/network/config < {{flanneld_config_dir}}/flanneld-config.json
     when: flanneld_config.changed
 
-  when: ansible_hostname == hostvars[groups['etcd_servers'][0]].ansible_hostname
+  when: inventory_hostname == hostvars[groups['etcd_servers'][0]].inventory_hostname
 
 # daemon config
 - name: copy config (Atomic)

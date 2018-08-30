@@ -1,6 +1,7 @@
-# storage drive to expand atomic image
+# additional storage drive
 storage_drive: /dev/vdb
-# root partition size
-storage_root_size: 4G
-# for raspbian nfs boot
+# for nfs boot systems
 storage_cache_dir: "{{cache_dir | default('/tmp')}}"
+
+# fedora atomic root partition size
+storage_atomic_root_size: 4G

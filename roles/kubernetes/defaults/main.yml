@@ -1,9 +1,12 @@
-kube_context: yourserver
-kube_tld: kube.examle.de
+kube_cluster_name: yourserver
+kube_domain: kube.examle.de
 kube_config_folder: /etc/kubernetes
-kube_cert_folder: "{{kube_config_folder}}/certs"
+kube_pki_dir: /etc/kubernetes/pki
 kube_allow_privileged_containers: "true"
 kube_taint_master: true
+kube_version: 1.11.1
+kube_arch: amd64
+kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 
 # cgroups
 kube_kubelet_reserved_cpu: 100m
@@ -12,17 +15,13 @@ kube_system_reserved_cpu: 100m
 kube_system_reserved_memory: 256Mi
 
 # network
-kube_apiserver_port: 8080
-kube_apiserver_insecure_port: 8081
+kube_apiserver_port: 6443
+kube_apiserver_insecure_port: 6444
 kube_service_network: 172.17.0.0/16
 kube_dns: 172.17.0.2
-kube_dns_domain: cluster.local
+kube_internal_domain: cluster.local
 
-# images
-kube_version: 1.10.1
-kube_arch: amd64
-kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 
 # etcd
 etcd_port: 2379
-etcd_cert_folder: "{{kube_cert_folder}}"
+etcd_pki_dir: "{{kube_pki_dir}}"

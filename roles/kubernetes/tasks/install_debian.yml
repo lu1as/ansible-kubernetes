@@ -30,10 +30,6 @@
     when: "kube_version not in kubeserver_version.stdout"
 
   # master services
-  - name: create kube user
-    user:
-      name: kube
-
   - name: create kubernetes-server services
     copy:
       src: "{{item}}.service"
@@ -107,6 +103,12 @@
       - kubelet
     
   when: "'kube_minions' in group_names"
+
+- name: create kube user
+  user:
+    name: kube
+    home: /etc/kubernetes
+    create_home: false
 
 - name: cleanup downloads
   file:
