@@ -2,7 +2,7 @@
   # install
   - name: install (Atomic)
     include_tasks: install_atomic.yml
-    when: is_atomic | default(false)
+    when: ansible_pkg_mgr == 'atomic_container'
 
   - name: install (Debian)
     include_tasks: install_debian.yml

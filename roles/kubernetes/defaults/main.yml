@@ -19,12 +19,7 @@ kube_dns: 172.17.0.2
 kube_dns_domain: cluster.local
 
 # images
-kube_apiserver_image: registry.fedoraproject.org/f27/kubernetes-apiserver
-kube_controller_manager_image: registry.fedoraproject.org/f27/kubernetes-controller-manager
-kube_scheduler_image: registry.fedoraproject.org/f27/kubernetes-scheduler
-kube_kubelet_image: registry.fedoraproject.org/f27/kubernetes-kubelet
-kube_proxy_image: registry.fedoraproject.org/f27/kubernetes-proxy
-kube_download_version: 1.10.1
+kube_version: 1.10.1
 kube_arch: amd64
 kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 

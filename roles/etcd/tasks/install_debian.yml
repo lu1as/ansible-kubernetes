@@ -1,6 +1,6 @@
 - name: check version (Debian)
   shell: etcd --version
-  register: etcd_version
+  register: etcd_current_version
   ignore_errors: true
   changed_when: false
   check_mode: false
@@ -10,12 +10,12 @@
 - block:
   - name: "install ({{etcd_arch}})"
     unarchive:
-      src: "https://github.com/coreos/etcd/releases/download/v{{etcd_download_version}}/etcd-v{{etcd_download_version}}-linux-{{etcd_arch}}.tar.gz"
+      src: "https://github.com/coreos/etcd/releases/download/v{{etcd_version}}/etcd-v{{etcd_version}}-linux-{{etcd_arch}}.tar.gz"
       dest: "{{etcd_download_dir}}"
       remote_src: true
 
   - copy:
-      src: "{{etcd_download_dir}}/etcd-v{{etcd_download_version}}-linux-{{etcd_arch}}/{{item}}"
+      src: "{{etcd_download_dir}}/etcd-v{{etcd_version}}-linux-{{etcd_arch}}/{{item}}"
       dest: "/usr/local/bin/{{item}}"
       remote_src: true
       mode: +x
@@ -25,11 +25,11 @@
     notify: restart etcd
   
   - file:
-      path: "{{etcd_download_dir}}/etcd-v{{etcd_download_version}}-linux-{{etcd_arch}}"
+      path: "{{etcd_download_dir}}/etcd-v{{etcd_version}}-linux-{{etcd_arch}}"
       state: absent
 
   when: "not etcd_install_local_binary and
-         etcd_download_version not in etcd_version.stdout"
+         etcd_version not in etcd_current_version.stdout"
 
 - name: check version (arm)
   shell: ETCD_UNSUPPORTED_ARCH=arm etcd --version
@@ -58,7 +58,7 @@
     notify: restart etcd
   
   when: etcd_install_local_binary and
-        etcd_version|failed
+        etcd_current_version|failed
 
 - name: create etcd user
   user:

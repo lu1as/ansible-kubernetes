@@ -21,4 +21,4 @@
       name: iptables
       enabled: true
 
-  when: is_atomic | default(false)
+  when: ansible_pkg_mgr == 'atomic_container'

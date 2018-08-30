@@ -3,14 +3,14 @@ prompt = no
 default_md = sha256
 req_extensions = v3_req
 x509_extensions = v3_req
-distinguished_name = {{cluster_name}}
+distinguished_name = k8s
 
-[{{cluster_name}}]
+[k8s]
 C = {{pki_country}}
 ST = {{pki_state}}
 L = {{pki_city}}
-O = {{cluster_name}}
-OU = kube
+O = {{pki_organization}}
+OU = kubernetes
 CN = {{hostvars[item].ansible_hostname}}.{{kube_tld}}
 
 [v3_req]
@@ -18,19 +18,10 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = {{hostvars[item].ansible_hostname}}.{{kube_tld}}
-{% if pki_tld is defined %}
-DNS.2 = {{hostvars[item].ansible_hostname}}.{{kube_tld}}.{{pki_tld}}
-{% endif %}
 {% if item in groups['kube_masters'] %}
-DNS.3 = master.{{kube_tld}}
-DNS.4 = kubernetes.default.srv.{{kube_dns_domain}}
-DNS.5 = kubernetes.default.srv
-DNS.6 = kubernetes.default
-DNS.7 = kubernetes
-{% endif %}
-{% if hostvars[item].ansible_default_ipv4 is defined %}
-IP.1 = {{hostvars[item].ansible_default_ipv4.address}}
-{% endif %}
-{% if item in groups['kube_masters'] %}
-IP.2 = {{pki_master_cluster_ip}}
+DNS.2 = master.{{kube_tld}}
+DNS.3 = kubernetes.default.srv.{{kube_dns_domain}}
+DNS.4 = kubernetes.default.srv
+DNS.5 = kubernetes.default
+DNS.6 = kubernetes
 {% endif %}

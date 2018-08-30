@@ -11,7 +11,7 @@
   - block:
     - name: "download kubernetes-server ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
   
@@ -27,7 +27,7 @@
         - kube-scheduler
         - kubectl
   
-    when: "kube_download_version not in kubeserver_version.stdout"
+    when: "kube_version not in kubeserver_version.stdout"
 
   # master services
   - name: create kube user
@@ -52,7 +52,7 @@
 - block:
   - name: check kubernetes-node version
     shell: kubelet --version
-    register: kubenode_version
+    register: kubenode_current_version
     ignore_errors: true
     check_mode: false
     changed_when: false
@@ -61,7 +61,7 @@
   - block:
     - name: "download kubernetes-node ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
 
@@ -75,7 +75,7 @@
         - kube-proxy
         - kubelet
 
-    when: "kube_download_version not in kubenode_version.stdout"
+    when: "kube_version not in kubenode_current_version.stdout"
 
   - name: create docker dropin directory
     file:

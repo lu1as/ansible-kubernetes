@@ -6,7 +6,7 @@ etcd_peer_port: 2380
 etcd_config_folder: /etc/etcd
 etcd_cert_folder: "{{etcd_config_folder}}/certs"
 etcd_image: registry.fedoraproject.org/f27/etcd
-etcd_download_version: 3.3.8
+etcd_version: 3.3.8
 etcd_install_local_binary: false
 etcd_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 etcd_arch: amd64

@@ -1,7 +1,7 @@
 # install
 - name: install (Atomic)
   include_tasks: install_atomic.yml
-  when: is_atomic | default(false)
+  when: ansible_pkg_mgr == 'atomic_container'
 
 - name: install (Debian)
   include_tasks: install_debian.yml
@@ -50,7 +50,7 @@
   notify: 
     - restart flanneld on masters
     - restart flanneld on minions
-  when: is_atomic | default(false)
+  when: ansible_pkg_mgr == 'atomic_container'
 
 - name: copy config (Debian)
   template:

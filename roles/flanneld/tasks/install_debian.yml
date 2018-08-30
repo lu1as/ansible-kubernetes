@@ -1,6 +1,6 @@
 - name: check version
   shell: flanneld --version
-  register: flanneld_version
+  register: flanneld_current_version
   ignore_errors: true
   check_mode: false
   changed_when: false
@@ -14,7 +14,7 @@
   notify: 
     - restart flanneld on masters
     - restart flanneld on minions
-  when: "flanneld_download_version not in flanneld_version.stdout"
+  when: "flanneld_version not in flanneld_current_version.stdout"
 
 - block:
   - name: create required directories

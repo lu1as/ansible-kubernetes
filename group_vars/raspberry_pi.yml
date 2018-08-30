@@ -5,3 +5,6 @@ kube_arch: arm
 etcd_arch: arm
 etcd_install_local_binary: true
 cache_dir: /tmp
+etcd_version: 3.3.8
+flanneld_version: 0.10.0
+kube_version: 1.10.1
