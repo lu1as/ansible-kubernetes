@@ -2,6 +2,7 @@ flanneld_network_name: minion
 # flanneld network with subnet mask
 flanneld_network: 172.16.0.0/16
 flanneld_configure_firewall: false
+flanneld_interface:
 
 flanneld_config_dir: /etc/flanneld
 flanneld_pki_dir: /etc/flanneld/pki

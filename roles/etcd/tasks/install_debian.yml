@@ -1,9 +1,5 @@
 - name: check version (Debian)
-  shell: |
-    {% if etcd_arch == 'arm' %}
-    ETCD_UNSUPPORTED_ARCH=arm
-    {% endif %}
-    etcd --version"
+  shell: "{% if etcd_arch == 'arm' %}ETCD_UNSUPPORTED_ARCH=arm{% endif %} etcd --version"
   register: etcd_current_version
   failed_when: false
   changed_when: etcd_version not in etcd_current_version.stdout
