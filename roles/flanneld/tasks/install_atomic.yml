@@ -5,5 +5,3 @@
     rpm_ostree_package: flannel
     rpm_ostree_version: "{{flanneld_version}}"
     rpm_ostree_binary_path: /usr/bin/flanneld
-
-- meta: flush_handlers

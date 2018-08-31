@@ -23,7 +23,7 @@
   file:
     name: "/root/{{file}}"
     state: absent
-  with_items:
+  loop:
     - meta-data
     - user-data
   loop_control:

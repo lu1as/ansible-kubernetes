@@ -15,20 +15,10 @@ spec:
       protocol: TCP
 ---
 apiVersion: v1
-kind: Service
+kind: ServiceAccount
 metadata:
   name: kubernetes-dashboard
   namespace: kube-system
-  labels:
-    k8s-app: kubernetes-dashboard
-spec:
-  selector:
-    k8s-app: kubernetes-dashboard
-  ports:
-    - name: http
-      port: 80
-      targetPort: 9090
-      protocol: TCP
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -53,7 +43,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: kubernetes-dashboard
-          image: gcr.io/google_containers/kubernetes-dashboard-amd64:{{kube_dashboard_version}}
+          image: gcr.io/google_containers/kubernetes-dashboard-amd64:v{{kube_dashboard_version}}
           resources:
             requests:
               memory: 64Mi

@@ -1,9 +1,9 @@
 - name: check version
   shell: flanneld --version
   register: flanneld_current_version
-  ignore_errors: true
+  failed_when: false
   check_mode: false
-  changed_when: false
+  changed_when: flanneld_version not in flanneld_current_version.stdout
 
 - name: "install ({{flanneld_arch | default(ansible_architecture)}})"
   get_url:
@@ -14,14 +14,14 @@
   notify: 
     - restart flanneld on masters
     - restart flanneld on minions
-  when: "flanneld_version not in flanneld_current_version.stdout"
+  when: flanneld_current_version.changed
 
 - block:
   - name: create required directories
     file:
       path: "{{item}}"
       state: directory
-    with_items:
+    loop:
       - /usr/libexec/flannel
       - /etc/systemd/system/docker.service.d
 

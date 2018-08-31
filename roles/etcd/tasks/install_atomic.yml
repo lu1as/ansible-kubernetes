@@ -6,5 +6,3 @@
     rpm_ostree_version: "{{etcd_version}}"
     rpm_ostree_binary_path: /usr/bin/etcd
   when: "'kube_masters' in group_names"
-
-- meta: flush_handlers

@@ -1,10 +1,13 @@
 - name: check version (Debian)
-  shell: etcd --version
+  shell: |
+    {% if etcd_arch == 'arm' %}
+    ETCD_UNSUPPORTED_ARCH=arm
+    {% endif %}
+    etcd --version"
   register: etcd_current_version
-  ignore_errors: true
-  changed_when: false
+  failed_when: false
+  changed_when: etcd_version not in etcd_current_version.stdout
   check_mode: false
-  when: "etcd_arch != 'arm'"
 
 # supported Debian
 - block:
@@ -19,7 +22,7 @@
       dest: "/usr/local/bin/{{item}}"
       remote_src: true
       mode: +x
-    with_items:
+    loop:
       - etcd
       - etcdctl
     notify: restart etcd
@@ -28,16 +31,8 @@
       path: "{{etcd_download_dir}}/etcd-v{{etcd_version}}-linux-{{etcd_arch}}"
       state: absent
 
-  when: "not etcd_install_local_binary and
-         etcd_version not in etcd_current_version.stdout"
-
-- name: check version (arm)
-  shell: ETCD_UNSUPPORTED_ARCH=arm etcd --version
-  register: etcd_version
-  ignore_errors: true
-  changed_when: false
-  check_mode: false
-  when: "etcd_arch == 'arm'"
+  when: "etcd_arch != 'arm' and
+         etcd_current_version.changed"
 
 # install from local binary
 - block:
@@ -52,13 +47,13 @@
       src: "{{gopath.stdout}}/src/github.com/coreos/etcd/bin/{{item}}"
       dest: "/usr/local/bin/{{item}}"
       mode: +x
-    with_items:
+    loop:
       - etcd
       - etcdctl
     notify: restart etcd
   
-  when: etcd_install_local_binary and
-        etcd_current_version|failed
+  when: "etcd_arch == 'arm' and
+        etcd_current_version.changed"
 
 - name: create etcd user
   user:

@@ -7,6 +7,5 @@ etcd_advertise_ip: "{{ansible_default_ipv4.address}}"
 etcd_config_dir: /etc/etcd
 etcd_pki_dir: /etc/etcd/pki
 etcd_version: 3.3.9
-etcd_install_local_binary: false
 etcd_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 etcd_arch: amd64

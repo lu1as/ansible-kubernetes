@@ -3,4 +3,4 @@
     name: genisoimage
 
 - include_tasks: generate.yml
-  with_items: "{{groups.virtual_machines}}"
+  loop: "{{groups.virtual_machines}}"

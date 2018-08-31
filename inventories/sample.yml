@@ -14,9 +14,11 @@ all:
     pki_organization: example org
   children:
     atomic:
-      master1:
-      minion1:
+      hosts:
+        master1:
+        minion1:
     virtual_machines: # needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
+      hosts:
       vars:
         cpu_cores: 2
         memory_size_gib: 2
@@ -26,8 +28,7 @@ all:
         master1:
     kube_minions:
       hosts:
-        node1:
-        node2:
+        minion1:
     etcd_servers:
       hosts:
         master1:

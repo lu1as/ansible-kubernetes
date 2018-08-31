@@ -1,7 +1,7 @@
 - name: install requirements
   apt:
     name: "{{item}}"
-  with_items:
+  loop:
     - apt-transport-https
     - ca-certificates
     - curl

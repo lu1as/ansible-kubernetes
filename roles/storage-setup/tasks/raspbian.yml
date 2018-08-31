@@ -19,7 +19,7 @@
     shell: "btrfs subvolume create /mnt/{{item}}"
     args:
       creates: "/mnt/{{item}}"
-    with_items:
+    loop:
       - etcd
 
   - name: mount master subvolumes
@@ -29,7 +29,7 @@
       fstype: btrfs
       state: mounted
       opts: "subvol={{item.name}}"
-    with_items:
+    loop:
       - name: etcd
         mnt: /var/lib/etcd
 
@@ -40,7 +40,7 @@
     shell: "btrfs subvolume create /mnt/{{item}}"
     args:
       creates: "/mnt/{{item}}"
-    with_items:
+    loop:
       - docker
       - kubelet
 
@@ -51,7 +51,7 @@
       fstype: btrfs
       state: mounted
       opts: "subvol={{item.name}}"
-    with_items:
+    loop:
       - name: docker
         mnt: /var/lib/docker
       - name: kubelet

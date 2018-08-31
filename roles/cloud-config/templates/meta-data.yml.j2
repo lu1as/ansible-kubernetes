@@ -1,2 +1,2 @@
-instance-id: {{hostvars[item].hostname}}
+instance-id: {{hostvars[item].vm_name}}
 {% if cloud_config_set_hostname == true %}local-hostname: {{hostvars[item].inventory_hostname}}.{{kube_domain}}{% endif %}

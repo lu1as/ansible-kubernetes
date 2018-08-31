@@ -1,6 +1,7 @@
 # install
-- include_tasks: install_atomic.yml
-  when: ansible_pkg_mgr == 'atomic_container'
+# use seperated role for summerized installation of atomic packages
+# - include_tasks: install_atomic.yml
+#   when: ansible_pkg_mgr == 'atomic_container'
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'
@@ -50,7 +51,7 @@
     systemd:
       name: "{{item}}"
       enabled: true
-    with_items:
+    loop:
       - kube-apiserver
       - kube-scheduler
       - kube-controller-manager
@@ -83,7 +84,7 @@
     systemd:
       name: "{{item}}"
       enabled: true
-    with_items:
+    loop:
       - kubelet
       - kube-proxy
 

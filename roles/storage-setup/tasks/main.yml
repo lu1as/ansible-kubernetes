@@ -1,5 +1,5 @@
 - name: storage-setup (Atomic)
-  include_tasks: fedora.yml
+  include_tasks: atomic.yml
   when:  ansible_pkg_mgr == 'atomic_container'
 
 - name: storage-setup (Raspbian)

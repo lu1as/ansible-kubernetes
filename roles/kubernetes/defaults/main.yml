@@ -3,10 +3,10 @@ kube_domain: kube.examle.de
 kube_config_folder: /etc/kubernetes
 kube_pki_dir: /etc/kubernetes/pki
 kube_taint_master: true
-kube_version: 1.11.1
+kube_version: 1.11.2
 kube_arch: amd64
 kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
-kube_dashboard_version: v1.8.3
+kube_dashboard_version: 1.10.0
 kube_dns_version: 1.14.10
 kube_service_network: 172.17.0.0/16
 kube_allow_privileged_containers: "true" # deprecated

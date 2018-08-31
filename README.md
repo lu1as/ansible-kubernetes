@@ -13,6 +13,7 @@ Hypervisor support for libvirt with KVM
 
 - create an inventory in `inventories/` based on the sample
 - for virtual machines create a `cloud-config.yml` file in `vars/`
+- IMPORTANT: Inventory hostnames will be used as hostnames. For example inventory hostname `master1` and kube_domain `kube.example.com` would result to `master1.kube.example.com`
 
 ## Create virtual machines
 
@@ -26,3 +27,8 @@ Hypervisor support for libvirt with KVM
 
     ansible-playbook -i inventories/<env> client.yml
     kubectl config use-context <kube-context>
+
+## Deploy kube-dns and kubernetes dashboard
+
+    kubectl apply -f kube-dns.yml
+    kubectl apply -f kubernetes-dashboard.yml

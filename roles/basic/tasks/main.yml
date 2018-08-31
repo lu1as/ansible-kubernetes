@@ -10,3 +10,9 @@
     line: 'SELINUX=disabled'
   notify: disable selinux
   when: ansible_selinux_python_present
+
+- name: install atomic packages
+  include_tasks: atomic_rpm_install.yml
+  when: ansible_pkg_mgr == 'atomic_container'
+
+- meta: flush_handlers

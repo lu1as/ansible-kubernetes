@@ -1,11 +1,11 @@
 # master only
 - block:
-  - name: check kubernetes-server version
+  - name: check kubernetes-master version
     shell: kube-apiserver --version
-    register: kubeserver_version
+    register: kubeserver_current_version
     check_mode: false
-    ignore_errors: true
-    changed_when: false
+    failed_when: false
+    changed_when: kube_version not in kubeserver_current_version.stdout
   
   # install master
   - block:
@@ -15,29 +15,29 @@
         dest: "{{kube_download_dir}}"
         remote_src: true
   
-    - name: install kubernetes-server
+    - name: install kubernetes-master
       copy:
         src: "{{kube_download_dir}}/kubernetes/server/bin/{{item}}"
         dest: "/usr/local/bin/{{item}}"
         mode: +x
         remote_src: true
-      with_items:
+      loop:
         - kube-apiserver
         - kube-controller-manager
         - kube-scheduler
         - kubectl
   
-    when: "kube_version not in kubeserver_version.stdout"
+    when: kubeserver_current_version.changed
 
   # master services
-  - name: create kubernetes-server services
+  - name: create kubernetes-master services
     copy:
       src: "{{item}}.service"
       dest: "/etc/systemd/system/{{item}}.service"
     notify:
       - systemd reload
       - "restart {{item}}"
-    with_items:
+    loop:
       - kube-apiserver
       - kube-controller-manager
       - kube-scheduler
@@ -49,9 +49,9 @@
   - name: check kubernetes-node version
     shell: kubelet --version
     register: kubenode_current_version
-    ignore_errors: true
+    failed_when: false
     check_mode: false
-    changed_when: false
+    changed_when: kube_version not in kubenode_current_version.stdout
 
   # install minion
   - block:
@@ -67,11 +67,11 @@
         dest: "/usr/local/bin/{{item}}"
         mode: +x
         remote_src: true
-      with_items:
+      loop:
         - kube-proxy
         - kubelet
 
-    when: "kube_version not in kubenode_current_version.stdout"
+    when: kubenode_current_version.changed
 
   - name: create docker dropin directory
     file:
@@ -98,7 +98,7 @@
     notify:
       - systemd reload 
       - "restart {{item}}"
-    with_items:
+    loop:
       - kube-proxy
       - kubelet
     
