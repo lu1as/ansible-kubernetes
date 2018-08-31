@@ -1,5 +1,6 @@
 kube_domain: kube.examle.de
 kube_internal_domain: cluster.local
+kube_internal_kubernetes_ip: 172.17.0.1
 
 pki_country: DE
 pki_state: Hessen

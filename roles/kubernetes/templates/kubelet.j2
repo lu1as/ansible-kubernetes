@@ -1,14 +1,10 @@
 # {{ ansible_managed }}
 # kubelet config
 
-# The address for the info server to serve on (set to 0.0.0.0 or "" for all interfaces)
-KUBELET_ADDRESS="--address=0.0.0.0"
+KUBELET_CONFIG="--config {{kube_config_folder}}/kubelet.yml --kubeconfig={{kube_config_folder}}/kubeconfig"
 
 # You may leave this blank to use the actual hostname
-# KUBELET_HOSTNAME="--hostname-override={{inventory_hostname}}.{{kube_domain}}"
-
-# location of the api-server
-KUBELET_API_SERVER="--kubeconfig={{kube_config_folder}}/kubeconfig"
+KUBELET_HOSTNAME="--hostname-override={{inventory_hostname}}.{{kube_domain}}"
 
 # Add your own!
-KUBELET_ARGS="--cgroup-driver=systemd --cluster-dns={{kube_dns}} --cluster-domain={{kube_internal_domain}} --kube-reserved=cpu={{kube_kubelet_reserved_cpu}},memory={{kube_kubelet_reserved_memory}} --system-reserved=cpu={{kube_system_reserved_cpu}},memory={{kube_system_reserved_memory}} {% if 'kube_masters' in group_names %}--node-labels=node-role.kubernetes.io/master {% if kube_taint_master %}--register-with-taints=node-role.kubernetes.io/master=:NoSchedule{% endif %}{% else %}--node-labels=node-role.kubernetes.io/minion{% endif %}"
+KUBELET_ARGS="{% if 'kube_masters' in group_names %}--node-labels=node-role.kubernetes.io/master {% if kube_taint_master %}--register-with-taints=node-role.kubernetes.io/master=:NoSchedule{% endif %}{% else %}--node-labels=node-role.kubernetes.io/minion{% endif %}"

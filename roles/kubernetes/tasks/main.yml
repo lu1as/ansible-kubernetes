@@ -66,6 +66,12 @@
       dest: "{{kube_config_folder}}/kubelet"
     notify: restart kubelet
 
+  - name: copy kubelet.yml config
+    template:
+      src: kubelet.yml.j2
+      dest: "{{kube_config_folder}}/kubelet.yml"
+    notify: restart kubelet
+
   # proxy
   - name: copy proxy config
     template:
@@ -82,5 +88,21 @@
       - kube-proxy
 
   when: "'kube_minions' in group_names"
+
+- name: create kube-dns resource (local)
+  template:
+    src: kube-dns.yml.j2
+    dest: kube-dns.yml
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
+
+- name: create kubernetes-dashboard resource (local)
+  template:
+    src: kubernetes-dashboard.yml.j2
+    dest: kubernetes-dashboard.yml
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
 
 - meta: flush_handlers

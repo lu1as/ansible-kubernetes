@@ -1,0 +1,24 @@
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+address: 0.0.0.0
+port: {{kube_kubelet_port}}
+cgroupDriver: {{kube_kubelet_cgroup_driver}}
+tlsCertFile: {{kube_pki_dir}}/certs/{{inventory_hostname}}.crt
+tlsPrivateKeyFile: {{kube_pki_dir}}/keys/{{inventory_hostname}}.key
+failSwapOn: {{kube_kubelet_fail_swap_on}}
+clusterDNS:
+{% for server in kube_internal_dns_servers %}
+  - {{server}}
+{% endfor %}
+clusterDomain: {{kube_internal_domain}}
+kubeReserved:
+  cpu: {{kube_kubelet_reserved_cpu}}
+  memory: {{kube_kubelet_reserved_memory}}
+systemReserved:
+  cpu: {{kube_kubelet_system_reserved_cpu}}
+  memory: {{kube_kubelet_system_reserved_memory}}
+authentication:
+  x509:
+    clientCAFile: {{kube_pki_dir}}/certs/ca.crt
+authorization:
+  mode: AlwaysAllow

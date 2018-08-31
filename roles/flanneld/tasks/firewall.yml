@@ -21,4 +21,4 @@
       name: iptables
       enabled: true
 
-  when: ansible_pkg_mgr == 'atomic_container'
+  when: ansible_os_family == 'RedHat'
