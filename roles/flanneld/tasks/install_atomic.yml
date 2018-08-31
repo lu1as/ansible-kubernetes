@@ -1,8 +1,7 @@
-- name: install via system container
-  atomic_container:
-    name: flanneld
-    image: "{{flanneld_image}}"
-    backend: ostree
-    state: latest
-    mode: system
-  when: not rpm_ostree_flanneld | default(false)
+- name: install flanneld via rpm-ostree
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: flannel
+    rpm_ostree_version: "{{flanneld_version}}"
+    rpm_ostree_binary_path: /usr/bin/flanneld

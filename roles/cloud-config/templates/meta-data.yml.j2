@@ -1,2 +1,2 @@
-instance-id: atomic-{{hostvars[item].hostname}}
-local-hostname: {{hostvars[item].hostname}}.{{kube_tld}}
+instance-id: {{hostvars[item].vm_name}}
+{% if cloud_config_set_hostname == true %}local-hostname: {{hostvars[item].inventory_hostname}}.{{kube_domain}}{% endif %}

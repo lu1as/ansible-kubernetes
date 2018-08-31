@@ -1,5 +1,2 @@
-- name: update ca trust
-  shell: /bin/update-ca-trust
-
 - name: disable selinux
   shell: setenforce 0

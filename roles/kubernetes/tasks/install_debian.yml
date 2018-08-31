@@ -1,47 +1,43 @@
 # master only
 - block:
-  - name: check kubernetes-server version
+  - name: check kubernetes-master version
     shell: kube-apiserver --version
-    register: kubeserver_version
+    register: kubeserver_current_version
     check_mode: false
-    ignore_errors: true
-    changed_when: false
+    failed_when: false
+    changed_when: kube_version not in kubeserver_current_version.stdout
   
   # install master
   - block:
     - name: "download kubernetes-server ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_version}}/kubernetes-server-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
   
-    - name: install kubernetes-server
+    - name: install kubernetes-master
       copy:
         src: "{{kube_download_dir}}/kubernetes/server/bin/{{item}}"
         dest: "/usr/local/bin/{{item}}"
         mode: +x
         remote_src: true
-      with_items:
+      loop:
         - kube-apiserver
         - kube-controller-manager
         - kube-scheduler
         - kubectl
   
-    when: "kube_download_version not in kubeserver_version.stdout"
+    when: kubeserver_current_version.changed
 
   # master services
-  - name: create kube user
-    user:
-      name: kube
-
-  - name: create kubernetes-server services
+  - name: create kubernetes-master services
     copy:
       src: "{{item}}.service"
       dest: "/etc/systemd/system/{{item}}.service"
     notify:
       - systemd reload
       - "restart {{item}}"
-    with_items:
+    loop:
       - kube-apiserver
       - kube-controller-manager
       - kube-scheduler
@@ -52,16 +48,16 @@
 - block:
   - name: check kubernetes-node version
     shell: kubelet --version
-    register: kubenode_version
-    ignore_errors: true
+    register: kubenode_current_version
+    failed_when: false
     check_mode: false
-    changed_when: false
+    changed_when: kube_version not in kubenode_current_version.stdout
 
   # install minion
   - block:
     - name: "download kubernetes-node ({{kube_arch | default(ansible_architecture)}})"
       unarchive:
-        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_download_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
+        src: "https://storage.googleapis.com/kubernetes-release/release/v{{kube_version}}/kubernetes-node-linux-{{kube_arch | default(ansible_architecture)}}.tar.gz"
         dest: "{{kube_download_dir}}"
         remote_src: true
 
@@ -71,11 +67,11 @@
         dest: "/usr/local/bin/{{item}}"
         mode: +x
         remote_src: true
-      with_items:
+      loop:
         - kube-proxy
         - kubelet
 
-    when: "kube_download_version not in kubenode_version.stdout"
+    when: kubenode_current_version.changed
 
   - name: create docker dropin directory
     file:
@@ -102,11 +98,17 @@
     notify:
       - systemd reload 
       - "restart {{item}}"
-    with_items:
+    loop:
       - kube-proxy
       - kubelet
     
   when: "'kube_minions' in group_names"
+
+- name: create kube user
+  user:
+    name: kube
+    home: /etc/kubernetes
+    create_home: false
 
 - name: cleanup downloads
   file:

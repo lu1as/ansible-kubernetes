@@ -1,5 +1,7 @@
-# atomic fedora user password
+# default user password
 cloud_config_password: password
-# atomic fedora user authorized ssh keys
+# default user authorized ssh keys
 cloud_config_authorized_keys: []
-kube_tld: kube.examle.de
+cloud_config_set_hostname: false
+
+kube_domain: kube.examle.de

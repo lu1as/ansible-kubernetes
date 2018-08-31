@@ -1,8 +1,8 @@
-- name: install via system container
-  atomic_container:
-    name: etcd
-    image: "{{etcd_image}}"
-    backend: ostree
-    state: latest
-    mode: system
-  when: not rpm_ostree_etcd | default(false)
+- name: install etcd via rpm-ostree
+  include_role: 
+    name: rpm-ostree
+  vars:
+    rpm_ostree_package: etcd
+    rpm_ostree_version: "{{etcd_version}}"
+    rpm_ostree_binary_path: /usr/bin/etcd
+  when: "'kube_masters' in group_names"

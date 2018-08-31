@@ -2,3 +2,5 @@
   include_tasks: install_debian.yml
   when: "ansible_os_family == 'Debian' and
         'kube_minions' in group_names"
+
+- meta: flush_handlers

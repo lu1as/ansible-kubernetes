@@ -1,15 +1,19 @@
 # install
-- include_tasks: install_atomic_containers.yml
-  when: is_atomic | default(false) and not rpm_ostree_kubernetes | default(false)
+# use seperated role for summerized installation of atomic packages
+# - include_tasks: install_atomic.yml
+#   when: ansible_pkg_mgr == 'atomic_container'
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'
 
 # pki
-- include_role:
+- name: copy pki
+  include_role:
     name: pki
   vars:
-    cert_folder: "{{kube_cert_folder}}"
+    pki_dest_dir: "{{kube_pki_dir}}"
+    pki_dest_dir_owner: root
+    pki_dest_dir_group: kube
 
 # main config
 - name: copy main config
@@ -47,7 +51,7 @@
     systemd:
       name: "{{item}}"
       enabled: true
-    with_items:
+    loop:
       - kube-apiserver
       - kube-scheduler
       - kube-controller-manager
@@ -63,6 +67,12 @@
       dest: "{{kube_config_folder}}/kubelet"
     notify: restart kubelet
 
+  - name: copy kubelet.yml config
+    template:
+      src: kubelet.yml.j2
+      dest: "{{kube_config_folder}}/kubelet.yml"
+    notify: restart kubelet
+
   # proxy
   - name: copy proxy config
     template:
@@ -74,10 +84,26 @@
     systemd:
       name: "{{item}}"
       enabled: true
-    with_items:
+    loop:
       - kubelet
       - kube-proxy
 
   when: "'kube_minions' in group_names"
+
+- name: create kube-dns resource (local)
+  template:
+    src: kube-dns.yml.j2
+    dest: kube-dns.yml
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
+
+- name: create kubernetes-dashboard resource (local)
+  template:
+    src: kubernetes-dashboard.yml.j2
+    dest: kubernetes-dashboard.yml
+  delegate_to: localhost
+  become: false
+  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
 
 - meta: flush_handlers

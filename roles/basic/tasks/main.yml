@@ -3,12 +3,6 @@
     src: hosts.j2
     dest: /etc/hosts
 
-# - name: copy ca cert
-#   copy:
-#     src: ../../../pki/{{kube_context}}/certs/ca.crt
-#     dest: /etc/pki/ca-trust/source/anchors/k8s-ca.crt
-#   notify: update ca trust
-
 - name: disable selinux permanently
   lineinfile:
     path: /etc/selinux/config
@@ -17,8 +11,8 @@
   notify: disable selinux
   when: ansible_selinux_python_present
 
-- name: install rpm-ostree packages (Atomic)
-  include_tasks: install_rpm_ostree.yml
-  when: is_atomic | default(false)
+- name: install atomic packages
+  include_tasks: atomic_rpm_install.yml
+  when: ansible_pkg_mgr == 'atomic_container'
 
 - meta: flush_handlers

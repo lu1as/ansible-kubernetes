@@ -1,35 +1,50 @@
-- name: create certificate directory
-  file:
-    path: "{{cert_folder}}"
-    state: directory
-
 - name: fetch ca certificate
   slurp:
     src: "{{pki_dir}}/certs/ca.crt"
-  register:  "{{ansible_hostname}}_ca_cert"
-  delegate_to: "{{groups['kube_masters'][0]}}"
+  register:  "{{inventory_hostname}}_ca_cert"
+  delegate_to: "{{pki_master}}"
+  become: true
 
 - name: fetch node key
   slurp:
-    src: "{{pki_dir}}/keys/{{ansible_hostname}}.key"
-  register: "{{ansible_hostname}}_node_key"
-  delegate_to: "{{groups['kube_masters'][0]}}"
+    src: "{{pki_dir}}/keys/{{inventory_hostname}}.key"
+  register: "{{inventory_hostname}}_node_key"
+  delegate_to: "{{pki_master}}"
   become: true
 
 - name: fetch node certificate
   slurp:
-    src: "{{pki_dir}}/certs/{{ansible_hostname}}.crt"
-  register: "{{ansible_hostname}}_node_cert"
-  delegate_to: "{{groups['kube_masters'][0]}}"
+    src: "{{pki_dir}}/certs/{{inventory_hostname}}.crt"
+  register: "{{inventory_hostname}}_node_cert"
+  delegate_to: "{{pki_master}}"
+  become: true
+
+- name: create pki structure in destination
+  file:
+    name: "{{item}}"
+    state: directory
+    owner: "{{pki_dest_dir_owner}}"
+    group: "{{pki_dest_dir_group}}"
+  loop:
+    - "{{pki_dest_dir}}"
+    - "{{pki_dest_dir}}/keys"
+    - "{{pki_dest_dir}}/certs"
 
 - name: push pki data
   copy:
-    content: "{{ vars[item.name]['content'] | b64decode }}"
-    dest: "{{cert_folder}}/{{item.dest}}"
-  with_items:
-    - name: "{{ansible_hostname}}_ca_cert"
-      dest: ca.crt
-    - name: "{{ansible_hostname}}_node_key"
-      dest: node.key
-    - name: "{{ansible_hostname}}_node_cert"
-      dest: node.crt
+    content: "{{vars[item.name]['content'] | b64decode}}"
+    dest: "{{pki_dest_dir}}/{{item.dest}}"
+    owner: "{{pki_dest_dir_owner}}"
+    group: "{{pki_dest_dir_group}}"
+  loop:
+    - name: "{{inventory_hostname}}_ca_cert"
+      dest: certs/ca.crt
+    - name: "{{inventory_hostname}}_node_key"
+      dest: "keys/{{inventory_hostname}}.key"
+    - name: "{{inventory_hostname}}_node_cert"
+      dest: "certs/{{inventory_hostname}}.crt"
+
+- name: protect private key
+  file:
+    path: "{{pki_dest_dir}}/keys/{{inventory_hostname}}.key"
+    mode: 0640

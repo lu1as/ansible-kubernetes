@@ -4,11 +4,11 @@
 # journal message level, 0 is debug
 # KUBE_LOG_LEVEL="--v=0"
 
-# Should this cluster be allowed to run privileged docker containers
+# DEPRECATED - Should this cluster be allowed to run privileged docker containers
 KUBE_ALLOW_PRIV="--allow-privileged={{kube_allow_privileged_containers}}"
 
 # How the controller-manager, scheduler, and proxy find the apiserver
 KUBE_MASTER="--kubeconfig={{kube_config_folder}}/kubeconfig"
 
 # Comma separated list of nodes in the etcd cluster
-KUBE_ETCD_SERVERS="--etcd-servers={% for server in groups['etcd_servers'] %}https://{{hostvars[server].ansible_hostname}}.{{kube_tld}}:{{etcd_port}}{% if not loop.last %},{% endif %}{% endfor %} --etcd-cafile={{etcd_cert_folder}}/ca.crt --etcd-certfile={{etcd_cert_folder}}/node.crt --etcd-keyfile={{etcd_cert_folder}}/node.key"
+KUBE_ETCD_SERVERS="--etcd-servers={% for server in groups['etcd_servers'] %}https://{{hostvars[server].inventory_hostname}}.{{kube_domain}}:{{etcd_port}}{% if not loop.last %},{% endif %}{% endfor %} --etcd-cafile={{etcd_pki_dir}}/certs/ca.crt --etcd-certfile={{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt --etcd-keyfile={{etcd_pki_dir}}/keys/{{inventory_hostname}}.key"

@@ -2,7 +2,7 @@
   file:
     name: "{{item}}"
     state: directory
-  with_items: 
+  loop: 
     - "{{pki_dir}}"
     - "{{pki_dir}}/certs"
     - "{{pki_dir}}/keys"
@@ -12,9 +12,7 @@
 - name: protect pki keys
   file:
     name: "{{pki_dir}}/keys"
-    owner: root
-    group: root
-    mode: 0600
+    mode: 0700
 
 - name: create ca key
   shell: "openssl genrsa -out {{pki_dir}}/keys/ca.key 4096"
@@ -24,7 +22,11 @@
 - name: create ca certificate
   shell: |
     openssl req -x509 -new -nodes -key {{pki_dir}}/keys/ca.key \
-    -subj "/CN={{kube_context}}-kubernetes" -days 3650 \
+    -subj "/CN={{kube_cluster_name}}-kubernetes" -days 3650 \
     -out {{pki_dir}}/certs/ca.crt
   args:
     creates: "{{pki_dir}}/certs/ca.crt"
+
+- name: create certificates
+  include_tasks: cert.yml
+  loop: "{{groups.pki_certs}}"

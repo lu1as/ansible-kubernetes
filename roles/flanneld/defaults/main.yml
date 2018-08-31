@@ -2,13 +2,15 @@ flanneld_network_name: minion
 # flanneld network with subnet mask
 flanneld_network: 172.16.0.0/16
 flanneld_configure_firewall: false
+flanneld_interface:
 
-flanneld_config_folder: /etc/flanneld
-flanneld_cert_folder: "{{flanneld_config_folder}}/certs"
-flanneld_image: registry.fedoraproject.org/f27/flannel
-flanneld_download_version: 0.10.0
+flanneld_config_dir: /etc/flanneld
+flanneld_pki_dir: /etc/flanneld/pki
+flanneld_version: 0.10.0
 flanneld_arch: amd64
 
 # etcd
-etcd_cert_folder: "{{flanneld_cert_folder}}"
+etcd_pki_dir: "{{flanneld_pki_dir}}"
 etcd_port: 2379
+
+internal_ip: "{{ansible_default_ipv4.address}}"

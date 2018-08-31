@@ -1,27 +1,27 @@
 - name: check version
   shell: flanneld --version
-  register: flanneld_version
-  ignore_errors: true
+  register: flanneld_current_version
+  failed_when: false
   check_mode: false
-  changed_when: false
+  changed_when: flanneld_version not in flanneld_current_version.stderr
 
 - name: "install ({{flanneld_arch | default(ansible_architecture)}})"
   get_url:
-    url: "https://github.com/coreos/flannel/releases/download/v{{flanneld_download_version}}/flanneld-{{flanneld_arch}}"
+    url: "https://github.com/coreos/flannel/releases/download/v{{flanneld_version}}/flanneld-{{flanneld_arch}}"
     dest: "/usr/local/bin/flanneld"
     remote_src: true
     mode: +x
   notify: 
     - restart flanneld on masters
     - restart flanneld on minions
-  when: "flanneld_download_version not in flanneld_version.stdout"
+  when: flanneld_current_version.changed
 
 - block:
   - name: create required directories
     file:
       path: "{{item}}"
       state: directory
-    with_items:
+    loop:
       - /usr/libexec/flannel
       - /etc/systemd/system/docker.service.d
 

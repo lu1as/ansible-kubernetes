@@ -1,33 +1,32 @@
-kube_context: yourserver
-kube_tld: kube.examle.de
+kube_cluster_name: example-cluster
+kube_domain: kube.examle.de
 kube_config_folder: /etc/kubernetes
-kube_cert_folder: "{{kube_config_folder}}/certs"
-kube_allow_privileged_containers: "true"
+kube_pki_dir: /etc/kubernetes/pki
 kube_taint_master: true
-
-# cgroups
-kube_kubelet_reserved_cpu: 100m
-kube_kubelet_reserved_memory: 128Mi
-kube_system_reserved_cpu: 100m
-kube_system_reserved_memory: 256Mi
-
-# network
-kube_apiserver_port: 8080
-kube_apiserver_insecure_port: 8081
-kube_service_network: 172.17.0.0/16
-kube_dns: 172.17.0.2
-kube_dns_domain: cluster.local
-
-# images
-kube_apiserver_image: registry.fedoraproject.org/f27/kubernetes-apiserver
-kube_controller_manager_image: registry.fedoraproject.org/f27/kubernetes-controller-manager
-kube_scheduler_image: registry.fedoraproject.org/f27/kubernetes-scheduler
-kube_kubelet_image: registry.fedoraproject.org/f27/kubernetes-kubelet
-kube_proxy_image: registry.fedoraproject.org/f27/kubernetes-proxy
-kube_download_version: 1.10.1
+kube_version: 1.11.2
 kube_arch: amd64
 kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
+kube_dashboard_version: 1.10.0
+kube_dns_version: 1.14.10
+kube_service_network: 172.17.0.0/16
+kube_allow_privileged_containers: "true" # deprecated
+kube_internal_dns_servers: 
+  - 172.17.0.2
+kube_internal_domain: cluster.local
+
+# apiserver
+kube_apiserver_port: 6443
+kube_apiserver_insecure_port: 6444
+
+# kubelet
+kube_kubelet_cgroup_driver: systemd
+kube_kubelet_reserved_cpu: 100m
+kube_kubelet_reserved_memory: 128Mi
+kube_kubelet_system_reserved_cpu: 100m
+kube_kubelet_system_reserved_memory: 256Mi
+kube_kubelet_fail_swap_on: false
+kube_kubelet_port: 10250
 
 # etcd
 etcd_port: 2379
-etcd_cert_folder: "{{kube_cert_folder}}"
+etcd_pki_dir: "{{kube_pki_dir}}"

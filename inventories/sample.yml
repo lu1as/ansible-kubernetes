@@ -1,0 +1,39 @@
+all:
+  hosts:
+    master1:
+      ansible_host: 10.1.1.1
+    minion1:
+      ansible_host: 10.1.1.2
+    client:
+      ansible_connection: local
+    hypervisor:
+      ansible_host: 1.1.1.1
+  vars:
+    kube_cluster_name: kube-cluster
+    kube_domain: kube.examle.de
+    pki_organization: example org
+  children:
+    atomic:
+      hosts:
+        master1:
+        minion1:
+    virtual_machines: # needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
+      hosts:
+      vars:
+        cpu_cores: 2
+        memory_size_gib: 2
+        data_size: 10g
+    kube_masters:
+      hosts:
+        master1:
+    kube_minions:
+      hosts:
+        minion1:
+    etcd_servers:
+      hosts:
+        master1:
+    pki_certs:
+      hosts:
+        master1:
+        minion1:
+        client:
