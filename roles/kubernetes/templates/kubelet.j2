@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 # kubelet config
 
-KUBELET_API_SERVER="--config {{kube_config_folder}}/kubelet.yml --kubeconfig={{kube_config_folder}}/kubeconfig"
+KUBELET_API_SERVER="--config={{kube_config_folder}}/kubelet.yml --kubeconfig={{kube_config_folder}}/kubeconfig"
 
 # You may leave this blank to use the actual hostname
 KUBELET_HOSTNAME="--hostname-override={{inventory_hostname}}.{{kube_domain}}"

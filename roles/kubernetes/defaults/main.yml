@@ -30,3 +30,5 @@ kube_kubelet_port: 10250
 # etcd
 etcd_port: 2379
 etcd_pki_dir: "{{kube_pki_dir}}"
+
+internal_ip: "{{ansible_default_ipv4.address}}"

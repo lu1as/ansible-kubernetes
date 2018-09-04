@@ -7,7 +7,7 @@ Compatible with:
 - Raspbian 9
 - Debian 9 (Stretch)
 
-Hypervisor support for libvirt with KVM
+Hypervisor support for Debian (libvirt with KVM)
 
 ## Setup
 
@@ -25,10 +25,10 @@ Hypervisor support for libvirt with KVM
 
 ## Configure kubectl client
 
-    ansible-playbook -i inventories/<env> client.yml
+    ansible-playbook -i inventories/<env> kube-client.yml
     kubectl config use-context <kube-context>
 
-## Deploy kube-dns and kubernetes dashboard
+## Deploy kube-dns and kubernetes-dashboard
 
     kubectl apply -f kube-dns.yml
     kubectl apply -f kubernetes-dashboard.yml
