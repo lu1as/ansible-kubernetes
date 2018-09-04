@@ -13,7 +13,7 @@
     mode: +x
   notify: 
     - restart flanneld on masters
-    - restart flanneld on minions
+    - restart flanneld and docker on minions
   when: flanneld_current_version.changed
 
 - block:
@@ -31,7 +31,7 @@
       dest: /etc/systemd/system/docker.service.d/40-flanneld-network.conf
     notify: 
       - restart flanneld on masters
-      - restart flanneld on minions
+      - restart flanneld and docker on minions
 
   - name: install docker opts script
     copy:
@@ -40,7 +40,7 @@
       mode: +x
     notify: 
       - restart flanneld on masters
-      - restart flanneld on minions
+      - restart flanneld and docker on minions
 
   when: "'kube_minions' in group_names"
 
@@ -50,4 +50,5 @@
     dest: /etc/systemd/system/flanneld.service
   notify: 
     - restart flanneld on masters
-    - restart flanneld on minions
+    - restart flanneld and docker on minions
+

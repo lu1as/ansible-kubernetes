@@ -1,2 +1,4 @@
 # {{ ansible_managed }}
 # kube-proxy config
+
+KUBE_PROXY_ARGS="--hostname-override={{inventory_hostname}}.{{kube_domain}}"

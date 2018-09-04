@@ -51,7 +51,7 @@
     dest: "/etc/sysconfig/flanneld"
   notify: 
     - restart flanneld on masters
-    - restart flanneld on minions
+    - restart flanneld and docker on minions
   when: ansible_pkg_mgr == 'atomic_container'
 
 - name: copy config (Debian)
@@ -60,7 +60,7 @@
     dest: "/etc/default/flanneld"
   notify: 
     - restart flanneld on masters
-    - restart flanneld on minions
+    - restart flanneld and docker on minions
   when: ansible_os_family == 'Debian'
 
 - name: enable flanneld
