@@ -4,6 +4,9 @@ flanneld_network: 172.16.0.0/16
 flanneld_configure_firewall: false
 flanneld_interface:
 
+# https://github.com/xetys/hetzner-kube/issues/139#issuecomment-415570771
+flanneld_wireguard_tx_checksum_offload_fix: false # debian only
+
 flanneld_config_dir: /etc/flanneld
 flanneld_pki_dir: /etc/flanneld/pki
 flanneld_version: 0.10.0
