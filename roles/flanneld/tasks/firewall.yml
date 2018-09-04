@@ -11,14 +11,26 @@
     jump: ACCEPT
 
 - block:
-  - name: persist firewall modifications
+  - name: persist firewall modifications (RedHat)
     template:
       src: iptables.save.j2
       dest: /etc/sysconfig/iptables
   
-  - name: enable iptables
+  - name: enable iptables (RedHat)
     systemd:
       name: iptables
       enabled: true
 
   when: ansible_os_family == 'RedHat'
+
+- block:
+  - name: install iptables-persistent (Debian)
+    apt:
+      name: iptables-persistent
+
+  - name: persist firewall modifications (Debian)
+    template:
+      src: iptables.save.j2
+      dest: /etc/iptables/rules.v4
+
+  when: ansible_os_family == 'Debian'

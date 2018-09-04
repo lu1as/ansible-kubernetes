@@ -1,7 +1,9 @@
 flanneld_network_name: minion
 # flanneld network with subnet mask
 flanneld_network: 172.16.0.0/16
+# FORWARD on flanneld interface sould be allowed
 flanneld_configure_firewall: false
+# optional interface used for peer to peer connection, e.g. wg0 for an existing wireguard vpn
 flanneld_interface:
 
 # https://github.com/xetys/hetzner-kube/issues/139#issuecomment-415570771
