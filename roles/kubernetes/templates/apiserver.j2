@@ -8,7 +8,7 @@ KUBE_API_ADDRESS="--bind-address=0.0.0.0"
 KUBE_API_PORT="--secure-port={{kube_apiserver_port}} --insecure-port={{kube_apiserver_insecure_port}}"
 
 # Address range to use for services
-KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range={{kube_service_network}} --advertise-address={{internal_ip}}"
+KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range={{kube_service_network}}{% if kube_apiserver_advertise_address != '' %} --advertise-address={{kube_apiserver_advertise_address}}{% endif %}"
 
 # default admission control policies
 KUBE_ADMISSION_CONTROL="--enable-admission-plugins=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"

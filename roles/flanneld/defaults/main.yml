@@ -17,5 +17,3 @@ flanneld_arch: amd64
 # etcd
 etcd_pki_dir: "{{flanneld_pki_dir}}"
 etcd_port: 2379
-
-internal_ip: "{{ansible_default_ipv4.address}}"
