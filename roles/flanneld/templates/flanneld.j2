@@ -3,9 +3,8 @@ FLANNEL_ETCD_PREFIX="/{{flanneld_network_name}}/network"
 FLANNEL_OPTIONS="--etcd-cafile={{flanneld_pki_dir}}/certs/ca.crt --etcd-certfile={{flanneld_pki_dir}}/certs/{{inventory_hostname}}.crt --etcd-keyfile={{flanneld_pki_dir}}/keys/{{inventory_hostname}}.key"
 
 # new naming conventions
-FLANNELD_PUBLIC_IP="{{internal_ip}}"
-{% if flanneld_interface is not none %}
-FLANNELD_IFACE="{{flanneld_interface}}"
+{% if flanneld_default_interface is not none and flanneld_default_interface != "" %}
+FLANNELD_IFACE="{{flanneld_default_interface}}"
 {% endif %}
 FLANNELD_ETCD_ENDPOINTS="{% for host in groups['etcd_servers'] %}https://{{hostvars[host].inventory_hostname}}.{{kube_domain}}:{{ etcd_port }}{% if not loop.last %},{% endif %}{% endfor %}"
 FLANNELD_ETCD_PREFIX="/{{flanneld_network_name}}/network"

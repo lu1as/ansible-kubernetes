@@ -57,7 +57,6 @@
   - name: wireguard tx checksum offload fix - install ethtool
     apt:
       name: ethtool
-    when: flanneld_wireguard_tx_checksum_offload_fix
 
   - name: wireguard tx checksum offload fix - create udev rule
     copy:
@@ -70,4 +69,4 @@
       src: flanneld-wireguard@.service
       dest: /etc/systemd/system/flanneld-wireguard@.service
 
-  when: flanneld_wireguard_tx_checksum_offload_fix
+  when: flanneld_over_wireguard
