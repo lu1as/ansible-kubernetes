@@ -14,4 +14,4 @@ KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range={{kube_service_network}}{% if
 KUBE_ADMISSION_CONTROL="--enable-admission-plugins=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
 
 # Add your own!
-KUBE_API_ARGS="--client-ca-file={{kube_pki_dir}}/certs/ca.crt --tls-cert-file={{kube_pki_dir}}/certs/{{inventory_hostname}}.crt --tls-private-key-file={{kube_pki_dir}}/keys/{{inventory_hostname}}.key --kubelet-certificate-authority={{kube_pki_dir}}/certs/ca.crt --kubelet-client-certificate={{kube_pki_dir}}/certs/{{inventory_hostname}}.crt --kubelet-client-key={{kube_pki_dir}}/keys/{{inventory_hostname}}.key"
+KUBE_API_ARGS="--client-ca-file={{kube_pki_dir}}/certs/ca.crt --tls-cert-file={{kube_pki_dir}}/certs/{{inventory_hostname}}.crt --tls-private-key-file={{kube_pki_dir}}/keys/{{inventory_hostname}}.key --kubelet-certificate-authority={{kube_pki_dir}}/certs/ca.crt --kubelet-client-certificate={{kube_pki_dir}}/certs/{{inventory_hostname}}.crt --kubelet-client-key={{kube_pki_dir}}/keys/{{inventory_hostname}}.key --service-account-key-file={{kube_pki_dir}}/keys/service_accounts.key"

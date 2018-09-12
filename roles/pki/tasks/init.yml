@@ -30,3 +30,8 @@
 - name: create certificates
   include_tasks: cert.yml
   loop: "{{groups.pki_certs}}"
+
+- name: create service accounts keyfile
+  shell: "openssl genrsa -out {{pki_dir}}/keys/service_accounts.key 4096"
+  args:
+    creates: "{{pki_dir}}/keys/service_accounts.key"

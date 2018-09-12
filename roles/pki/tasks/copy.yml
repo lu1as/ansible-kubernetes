@@ -19,6 +19,14 @@
   delegate_to: "{{pki_master}}"
   become: true
 
+- name: fetch service accounts keyfile
+  slurp:
+    src: "{{pki_dir}}/keys/service_accounts.key"
+  register: "{{inventory_hostname}}_service_accounts_key"
+  delegate_to: "{{pki_master}}"
+  when: "'kube_masters' in group_names"
+  become: true
+
 - name: create pki structure in destination
   file:
     name: "{{item}}"
@@ -43,6 +51,15 @@
       dest: "keys/{{inventory_hostname}}.key"
     - name: "{{inventory_hostname}}_node_cert"
       dest: "certs/{{inventory_hostname}}.crt"
+
+- name: push service accounts keyfile
+  copy:
+    content: "{{vars[inventory_hostname + '_service_accounts_key'].content | b64decode}}"
+    dest: "{{pki_dest_dir}}/keys/service_accounts.key"
+    owner: "{{pki_dest_dir_owner}}"
+    group: "{{pki_dest_dir_group}}"
+    mode: 0640
+  when: "'kube_masters' in group_names"
 
 - name: protect private key
   file:
