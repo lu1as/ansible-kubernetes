@@ -9,6 +9,10 @@ COMMIT
 :INPUT ACCEPT
 :FORWARD DROP
 :OUTPUT ACCEPT
--A FORWARD -i flannel.1 -j ACCEPT
--A FORWARD -o flannel.1 -j ACCEPT
+-A FORWARD -i {{flanneld_interface_name}} -j ACCEPT
+-A FORWARD -o {{flanneld_interface_name}} -j ACCEPT
+{% if flanneld_over_wireguard == true %}
+-A FORWARD -i {{flanneld_wireguard_interface}} -j ACCEPT
+-A FORWARD -o {{flanneld_wireguard_interface}} -j ACCEPT
+{% endif %}
 COMMIT

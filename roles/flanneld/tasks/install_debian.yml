@@ -52,3 +52,21 @@
     - restart flanneld on masters
     - restart flanneld and docker on minions
 
+# wireguard tx checksum offload fix - https://github.com/xetys/hetzner-kube/issues/139#issuecomment-415570771
+- block:
+  - name: wireguard tx checksum offload fix - install ethtool
+    apt:
+      name: ethtool
+
+  - name: wireguard tx checksum offload fix - create udev rule
+    copy:
+      src: flanneld.rules
+      dest: /etc/udev/rules.d/71-flanneld.rules
+    notify: restart systemd-udevd
+
+  - name: wireguard tx checksum offload fix - create service
+    copy:
+      src: flanneld-wireguard@.service
+      dest: /etc/systemd/system/flanneld-wireguard@.service
+
+  when: flanneld_over_wireguard
