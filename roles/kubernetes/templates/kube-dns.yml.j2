@@ -6,6 +6,7 @@ metadata:
   labels:
     k8s-app: kube-dns
 spec:
+  clusterIP: {{kube_internal_dns_servers[0]}}
   selector:
     k8s-app: kube-dns
   ports:
