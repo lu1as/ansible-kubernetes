@@ -31,3 +31,7 @@
   systemd:
     name: kube-proxy
     state: restarted
+
+- name: bootstrap cluster role bindings
+  shell: kubectl apply -f cluster-role-bindings.yml
+  become: false

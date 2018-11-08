@@ -1,0 +1,19 @@
+# kubeconfig for insecure access
+- name: create kubectl config directory
+  file:
+    path: "/home/{{ansible_env.SUDO_USER}}/.kube"
+    state: directory
+    owner: "{{ansible_env.SUDO_USER}}"
+
+- name: copy kubeconfig for insecure access
+  template:
+    src: rbac/kubeconfig_insecure.j2
+    dest: "/home/{{ansible_env.SUDO_USER}}/.kube/config"
+    owner: "{{ansible_env.SUDO_USER}}"
+
+- name: copy cluster role binding bootstrap config
+  template:
+    src: rbac/cluster-role-bindings.yml.j2
+    dest: "/home/{{ansible_env.SUDO_USER}}/cluster-role-bindings.yml"
+    owner: "{{ansible_env.SUDO_USER}}"
+  notify: bootstrap cluster role bindings
