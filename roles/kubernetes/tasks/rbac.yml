@@ -11,9 +11,24 @@
     dest: "/home/{{ansible_env.SUDO_USER}}/.kube/config"
     owner: "{{ansible_env.SUDO_USER}}"
 
-- name: copy cluster role binding bootstrap config
+# rbac bootstrap
+- name: copy rbac bootstrap config
   template:
-    src: rbac/cluster-role-bindings.yml.j2
-    dest: "/home/{{ansible_env.SUDO_USER}}/cluster-role-bindings.yml"
+    src: rbac/bootstrap.yml.j2
+    dest: "/home/{{ansible_env.SUDO_USER}}/rbac-bootstrap.yml"
     owner: "{{ansible_env.SUDO_USER}}"
-  notify: bootstrap cluster role bindings
+  register: rbac_bootstrap_config
+
+- name: bootstrap rbac
+  shell: kubectl apply -f rbac-bootstrap.yml
+  become: false
+  when: rbac_bootstrap_config.changed
+  ignore_errors: true
+  register: rbac_bootstrap
+
+- name: reset rbac bootstrap
+  file:
+    path: "/home/{{ansible_env.SUDO_USER}}/rbac-bootstrap.yml"
+    state: absent
+  failed_when: true
+  when: rbac_bootstrap is failed

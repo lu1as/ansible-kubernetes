@@ -35,6 +35,7 @@
       name: etcd
       enabled: true
 
-  - meta: flush_handlers
 
   when: "'etcd_servers' in group_names"
+
+- meta: flush_handlers
