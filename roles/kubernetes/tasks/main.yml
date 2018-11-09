@@ -1,7 +1,6 @@
 # install
-# use seperated role for summerized installation of atomic packages
-# - include_tasks: install_atomic.yml
-#   when: ansible_pkg_mgr == 'atomic_container'
+- include_tasks: install_atomic.yml
+  when: ansible_pkg_mgr == 'atomic_container'
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'

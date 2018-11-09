@@ -1,9 +1,9 @@
 # ansible-kubernetes
 
-ansible role collection to setup a kubernetes cluster
+ansible playbooks to build a kubernetes cluster
 
 Compatible with:
-- Fedora Atomic 28
+- Fedora Atomic 29
 - Raspbian 9
 - Debian 9 (Stretch)
 

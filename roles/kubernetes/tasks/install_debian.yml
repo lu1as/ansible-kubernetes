@@ -79,11 +79,10 @@
       state: directory
   
   - name: patch docker service
-    copy:
+    template:
       src: docker-dropin.conf
       dest: /etc/systemd/system/docker.service.d/30-systemd-cgroup-driver.conf
-    notify:
-      - restart docker
+    notify: restart docker
 
   - name: create kubelet lib
     file:
