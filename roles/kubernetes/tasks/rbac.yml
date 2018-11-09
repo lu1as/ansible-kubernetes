@@ -1,0 +1,34 @@
+# kubeconfig for insecure access
+- name: create kubectl config directory
+  file:
+    path: "/home/{{ansible_env.SUDO_USER}}/.kube"
+    state: directory
+    owner: "{{ansible_env.SUDO_USER}}"
+
+- name: copy kubeconfig for insecure access
+  template:
+    src: rbac/kubeconfig_insecure.j2
+    dest: "/home/{{ansible_env.SUDO_USER}}/.kube/config"
+    owner: "{{ansible_env.SUDO_USER}}"
+
+# rbac bootstrap
+- name: copy rbac bootstrap config
+  template:
+    src: rbac/bootstrap.yml.j2
+    dest: "/home/{{ansible_env.SUDO_USER}}/rbac-bootstrap.yml"
+    owner: "{{ansible_env.SUDO_USER}}"
+  register: rbac_bootstrap_config
+
+- name: bootstrap rbac
+  shell: kubectl apply -f rbac-bootstrap.yml
+  become: false
+  when: rbac_bootstrap_config.changed
+  ignore_errors: true
+  register: rbac_bootstrap
+
+- name: reset rbac bootstrap
+  file:
+    path: "/home/{{ansible_env.SUDO_USER}}/rbac-bootstrap.yml"
+    state: absent
+  failed_when: true
+  when: rbac_bootstrap is failed

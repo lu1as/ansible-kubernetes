@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-custom
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin
+  namespace: default
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: client.{{kube_domain}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:kube-scheduler-custom
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:kube-scheduler
+subjects:
+{% for item in groups.kube_masters %}
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{hostvars[item].inventory_hostname}}.{{kube_domain}}
+{% endfor %}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:kube-controller-manager-custom
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:kube-controller-manager
+subjects:
+{% for item in groups.kube_masters %}
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{hostvars[item].inventory_hostname}}.{{kube_domain}}
+{% endfor %}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:node-custom
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:node
+subjects:
+{% for item in groups.kube_minions %}
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{hostvars[item].inventory_hostname}}.{{kube_domain}}
+{% endfor %}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:node-proxier-custom
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:node-proxier
+subjects:
+{% for item in groups.kube_minions %}
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: {{hostvars[item].inventory_hostname}}.{{kube_domain}}
+{% endfor %}

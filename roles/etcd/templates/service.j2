@@ -6,7 +6,7 @@ After=network.target
 [Service]
 User=etcd
 Type=notify
-{% if ansible_lsb.id == 'Raspbian' %}
+{% if ansible_lsb.id is defined and ansible_lsb.id == 'Raspbian' %}
 Environment=ETCD_UNSUPPORTED_ARCH=arm
 {% endif %}
 EnvironmentFile=/etc/etcd/etcd.conf

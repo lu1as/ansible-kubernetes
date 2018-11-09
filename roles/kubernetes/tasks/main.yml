@@ -92,7 +92,7 @@
 
 - name: create kube-dns resource (local)
   template:
-    src: kube-dns.yml.j2
+    src: bootstrap/kube-dns.yml.j2
     dest: kube-dns.yml
   delegate_to: localhost
   become: false
@@ -100,10 +100,15 @@
 
 - name: create kubernetes-dashboard resource (local)
   template:
-    src: kubernetes-dashboard.yml.j2
+    src: bootstrap/kubernetes-dashboard.yml.j2
     dest: kubernetes-dashboard.yml
   delegate_to: localhost
   become: false
   when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
 
 - meta: flush_handlers
+
+- name: bootstrap rbac
+  include_tasks: rbac.yml
+  when: kube_rbac and 
+        (inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname)

@@ -13,6 +13,7 @@ kube_allow_privileged_containers: "true" # deprecated
 kube_internal_dns_servers: 
   - 172.17.0.2
 kube_internal_domain: cluster.local
+kube_rbac: false
 
 # apiserver
 kube_apiserver_port: 6443

@@ -41,6 +41,15 @@
       --key-file {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key \
       set {{flanneld_network_name}}/network/config < {{flanneld_config_dir}}/flanneld-config.json
     when: flanneld_config.changed
+    ignore_errors: true
+    register: flanneld_config_upload
+
+  - name: reset config
+    file:
+      path: "{{flanneld_config_dir}}/flanneld-config.json"
+      state: absent
+    failed_when: true
+    when: flanneld_config_upload is failed
 
   when: inventory_hostname == hostvars[groups['etcd_servers'][0]].inventory_hostname
 

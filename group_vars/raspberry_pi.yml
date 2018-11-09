@@ -4,6 +4,3 @@ flanneld_arch: arm
 kube_arch: arm
 etcd_arch: arm
 cache_dir: /tmp
-flanneld_version: 0.10.0
-etcd_version: 3.3.9
-kube_version: 1.11.2

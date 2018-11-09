@@ -15,4 +15,9 @@
   include_tasks: atomic_rpm_install.yml
   when: ansible_pkg_mgr == 'atomic_container'
 
+- name: install requirements
+  apt:
+    name: ca-certificates
+  when: ansible_pkg_mgr == 'apt'
+
 - meta: flush_handlers
