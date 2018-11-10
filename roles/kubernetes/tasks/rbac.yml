@@ -1,16 +1,3 @@
-# kubeconfig for insecure access
-- name: create kubectl config directory
-  file:
-    path: "/home/{{ansible_env.SUDO_USER}}/.kube"
-    state: directory
-    owner: "{{ansible_env.SUDO_USER}}"
-
-- name: copy kubeconfig for insecure access
-  template:
-    src: rbac/kubeconfig_insecure.j2
-    dest: "/home/{{ansible_env.SUDO_USER}}/.kube/config"
-    owner: "{{ansible_env.SUDO_USER}}"
-
 # rbac bootstrap
 - name: copy rbac bootstrap config
   template:

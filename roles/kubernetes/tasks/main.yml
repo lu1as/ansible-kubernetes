@@ -29,65 +29,17 @@
     - restart kubelet
     - restart kube-apiserver
 
-# master only block
-- block:
-  # apiserver
-  - name: copy apiserver config
-    template:
-      src: apiserver.j2
-      dest: "{{kube_config_folder}}/apiserver"
-    notify: restart kube-apiserver
-
-  # controller-manager
-  - name: copy controller-manager config
-    template:
-      src: controller-manager.j2
-      dest: "{{kube_config_folder}}/controller-manager"
-    notify: restart kube-controller-manager
-
-  - name: enable kubernetes master components
-    systemd:
-      name: "{{item}}"
-      enabled: true
-    loop:
-      - kube-apiserver
-      - kube-scheduler
-      - kube-controller-manager
-
+# master config
+- name: configure master
+  include_tasks: master.yml
   when: "'kube_masters' in group_names"
 
-# minions only block
-- block:
-  # kubelet
-  - name: copy kubelet config
-    template:
-      src: kubelet.j2
-      dest: "{{kube_config_folder}}/kubelet"
-    notify: restart kubelet
-
-  - name: copy kubelet.yml config
-    template:
-      src: kubelet.yml.j2
-      dest: "{{kube_config_folder}}/kubelet.yml"
-    notify: restart kubelet
-
-  # proxy
-  - name: copy proxy config
-    template:
-      src: proxy.j2
-      dest: "{{kube_config_folder}}/proxy"
-    notify: restart kube-proxy
-
-  - name: enable kubernetes node components
-    systemd:
-      name: "{{item}}"
-      enabled: true
-    loop:
-      - kubelet
-      - kube-proxy
-
+# minion config
+- name: configure minion
+  include_tasks: minion.yml
   when: "'kube_minions' in group_names"
 
+# kube-dns and kubernetes-dashboard
 - name: create kube-dns resource (local)
   template:
     src: bootstrap/kube-dns.yml.j2
@@ -106,6 +58,7 @@
 
 - meta: flush_handlers
 
+# rbac bootstrap
 - name: bootstrap rbac
   include_tasks: rbac.yml
   when: kube_rbac and 
