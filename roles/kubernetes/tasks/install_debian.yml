@@ -80,7 +80,7 @@
   
   - name: patch docker service
     template:
-      src: docker-dropin.conf
+      src: docker-dropin.conf.j2
       dest: /etc/systemd/system/docker.service.d/30-systemd-cgroup-driver.conf
     notify: restart docker
 
