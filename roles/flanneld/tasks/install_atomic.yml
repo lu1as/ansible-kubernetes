@@ -1,7 +1,0 @@
-- name: install flanneld via rpm-ostree
-  include_role: 
-    name: rpm-ostree
-  vars:
-    rpm_ostree_package: flannel
-    rpm_ostree_version: "{{flanneld_version}}"
-    rpm_ostree_binary_path: /usr/bin/flanneld
