@@ -1,6 +1,5 @@
 # install
-- include_tasks: install_atomic.yml
-  when: ansible_pkg_mgr == 'atomic_container'
+# atomic packages are installed by basic role
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'

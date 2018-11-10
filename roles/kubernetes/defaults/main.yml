@@ -21,7 +21,7 @@ kube_apiserver_insecure_port: 6444
 kube_apiserver_advertise_address: "{{internal_ip | default('')}}"
 
 # kubelet
-kube_kubelet_cgroup_driver: systemd
+kube_kubelet_cgroup_driver: "{{docker_cgroup_driver}}"
 kube_kubelet_reserved_cpu: 100m
 kube_kubelet_reserved_memory: 128Mi
 kube_kubelet_system_reserved_cpu: 100m
