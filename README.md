@@ -39,3 +39,12 @@ Backups will be created on first master node at `backup_dir` which is `/mnt/back
 If you want to use a nfs share at this location, set `backup_nfs_share` to your share.
 For example: `nfs-server:/kubernetes-backup`
 
+### Etcd snapshots
+
+To enable etcd snapshots set `etcd_enable_snapshots` to `true`. 
+This will also create a cronjob for daily snapshots with one week lifetime.
+If you want to prevent this, set `etcd_snapshot_cronjob` to `false`.
+The default snapshot directory is `/mnt/backup/etcd-snapshots`, defined by `etcd_snapshot_dir`.
+
+Create a manual snapshot: `--extra-vars="etcd_manual_snapshot=true"`
+Restore from a snapshot: `--extra-vars="etcd_restore_snapshot='snapshot-manual.db'"`

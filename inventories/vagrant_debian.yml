@@ -21,6 +21,7 @@ all:
     etcd_version: 3.2.16
     kube_version: 1.10.3
     kube_rbac: true
+    etcd_enable_snapshots: true
   children:
     kube_masters:
       hosts:
