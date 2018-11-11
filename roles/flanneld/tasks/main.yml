@@ -1,8 +1,5 @@
 # install
-# use seperated role for summerized installation of atomic packages
-# - name: install (Atomic)
-#   include_tasks: install_atomic.yml
-#   when: ansible_pkg_mgr == 'atomic_container'
+# atomic packages are installed by basic role
 
 - name: install (Debian)
   include_tasks: install_debian.yml
@@ -25,32 +22,9 @@
   vars:
     pki_dest_dir: "{{flanneld_pki_dir}}"
 
-# network config
-- block:
-  - name: copy cluster config
-    template:
-      src: flanneld-config.json.j2
-      dest: "{{flanneld_config_dir}}/flanneld-config.json"
-    register: flanneld_config
-
-  - name: upload cluster config to etcd
-    shell: |
-      etcdctl --endpoints https://{{inventory_hostname}}.{{kube_domain}}:{{etcd_port}} \
-      --ca-file {{etcd_pki_dir}}//certs/ca.crt \
-      --cert-file {{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt \
-      --key-file {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key \
-      set {{flanneld_network_name}}/network/config < {{flanneld_config_dir}}/flanneld-config.json
-    when: flanneld_config.changed
-    ignore_errors: true
-    register: flanneld_config_upload
-
-  - name: reset config
-    file:
-      path: "{{flanneld_config_dir}}/flanneld-config.json"
-      state: absent
-    failed_when: true
-    when: flanneld_config_upload is failed
-
+# cluster network config
+- name: configure cluster network
+  include_tasks: network_config.yml
   when: inventory_hostname == hostvars[groups['etcd_servers'][0]].inventory_hostname
 
 # daemon config

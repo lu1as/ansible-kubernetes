@@ -1,1 +1,2 @@
 docker_arch: amd64
+docker_cgroup_driver: systemd

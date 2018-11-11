@@ -1,0 +1,27 @@
+# kubelet
+- name: copy kubelet config
+  template:
+    src: kubelet.j2
+    dest: "{{kube_config_folder}}/kubelet"
+  notify: restart kubelet
+
+- name: copy kubelet.yml config
+  template:
+    src: kubelet.yml.j2
+    dest: "{{kube_config_folder}}/kubelet.yml"
+  notify: restart kubelet
+
+# kube-proxy
+- name: copy kube-proxy config
+  template:
+    src: proxy.j2
+    dest: "{{kube_config_folder}}/proxy"
+  notify: restart kube-proxy
+
+- name: enable kubernetes node components
+  systemd:
+    name: "{{item}}"
+    enabled: true
+  loop:
+    - kubelet
+    - kube-proxy

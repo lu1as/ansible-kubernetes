@@ -1,5 +1,5 @@
 virt_image_url: https://getfedora.org/atomic_qcow2_latest
 virt_drives_dir: /mnt/drives
 virt_images_dir: /mnt/images
-virt_image: kubernetes-host-image.qcow2
+virt_image: fedora_atomic_latest.qcow2
 virt_lvm_vg: /dev/raid1

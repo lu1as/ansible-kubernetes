@@ -33,8 +33,7 @@
     state: directory
 
 - name: patch docker service
-  copy:
-    src: docker-dropin.conf
-    dest: /etc/systemd/system/docker.service.d/10-note-env-vars.conf
-  notify:
-    - restart docker
+  template:
+    src: docker-dropin.conf.j2
+    dest: /etc/systemd/system/docker.service.d/10-cgroup-driver.conf
+  notify: restart docker

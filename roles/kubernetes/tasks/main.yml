@@ -1,7 +1,5 @@
 # install
-# use seperated role for summerized installation of atomic packages
-# - include_tasks: install_atomic.yml
-#   when: ansible_pkg_mgr == 'atomic_container'
+# atomic packages are installed by basic role
 
 - include_tasks: install_debian.yml
   when: ansible_os_family == 'Debian'
@@ -31,83 +29,28 @@
     - restart kubelet
     - restart kube-apiserver
 
-# master only block
-- block:
-  # apiserver
-  - name: copy apiserver config
-    template:
-      src: apiserver.j2
-      dest: "{{kube_config_folder}}/apiserver"
-    notify: restart kube-apiserver
-
-  # controller-manager
-  - name: copy controller-manager config
-    template:
-      src: controller-manager.j2
-      dest: "{{kube_config_folder}}/controller-manager"
-    notify: restart kube-controller-manager
-
-  - name: enable kubernetes master components
-    systemd:
-      name: "{{item}}"
-      enabled: true
-    loop:
-      - kube-apiserver
-      - kube-scheduler
-      - kube-controller-manager
-
+# master config
+- name: configure master
+  include_tasks: master.yml
   when: "'kube_masters' in group_names"
 
-# minions only block
-- block:
-  # kubelet
-  - name: copy kubelet config
-    template:
-      src: kubelet.j2
-      dest: "{{kube_config_folder}}/kubelet"
-    notify: restart kubelet
-
-  - name: copy kubelet.yml config
-    template:
-      src: kubelet.yml.j2
-      dest: "{{kube_config_folder}}/kubelet.yml"
-    notify: restart kubelet
-
-  # proxy
-  - name: copy proxy config
-    template:
-      src: proxy.j2
-      dest: "{{kube_config_folder}}/proxy"
-    notify: restart kube-proxy
-
-  - name: enable kubernetes node components
-    systemd:
-      name: "{{item}}"
-      enabled: true
-    loop:
-      - kubelet
-      - kube-proxy
-
+# minion config
+- name: configure minion
+  include_tasks: minion.yml
   when: "'kube_minions' in group_names"
-
-- name: create kube-dns resource (local)
-  template:
-    src: bootstrap/kube-dns.yml.j2
-    dest: kube-dns.yml
-  delegate_to: localhost
-  become: false
-  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
-
-- name: create kubernetes-dashboard resource (local)
-  template:
-    src: bootstrap/kubernetes-dashboard.yml.j2
-    dest: kubernetes-dashboard.yml
-  delegate_to: localhost
-  become: false
-  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
 
 - meta: flush_handlers
 
+# kube-dns and kubernetes-dashboard
+- name: deploy dns and dashboard
+  include_tasks: apply_resource.yml
+  when: "inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
+        and kube_dashboard"
+  loop:
+    - kube-dns
+    - kubernetes-dashboard
+
+# rbac bootstrap
 - name: bootstrap rbac
   include_tasks: rbac.yml
   when: kube_rbac and 

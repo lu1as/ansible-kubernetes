@@ -6,8 +6,6 @@ kube_taint_master: true
 kube_version: 1.11.2
 kube_arch: amd64
 kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
-kube_dashboard_version: 1.10.0
-kube_dns_version: 1.14.10
 kube_service_network: 172.17.0.0/16
 kube_allow_privileged_containers: "true" # deprecated
 kube_internal_dns_servers: 
@@ -15,13 +13,18 @@ kube_internal_dns_servers:
 kube_internal_domain: cluster.local
 kube_rbac: false
 
+# deploy kube-dns and kubernetes-dashboard
+kube_dashboard: true
+kube_dashboard_version: 1.10.0
+kube_dns_version: 1.14.10
+
 # apiserver
 kube_apiserver_port: 6443
 kube_apiserver_insecure_port: 6444
 kube_apiserver_advertise_address: "{{internal_ip | default('')}}"
 
 # kubelet
-kube_kubelet_cgroup_driver: systemd
+kube_kubelet_cgroup_driver: "{{docker_cgroup_driver}}"
 kube_kubelet_reserved_cpu: 100m
 kube_kubelet_reserved_memory: 128Mi
 kube_kubelet_system_reserved_cpu: 100m

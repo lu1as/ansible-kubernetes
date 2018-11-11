@@ -1,30 +1,17 @@
+# allow FORWARD on flanneld interface
 - name: allow FORWARD from flanneld interface
   iptables:
     chain: FORWARD
-    in_interface: "{{flanneld_interface_name}}"
+    in_interface: "{{flanneld_interface}}"
     jump: ACCEPT
 
 - name: allow FORWARD to flanneld interface
   iptables:
     chain: FORWARD
-    out_interface: "{{flanneld_interface_name}}"
+    out_interface: "{{flanneld_interface}}"
     jump: ACCEPT
 
-- block:
-  - name: allow FORWARD from wireguard interface
-    iptables:
-      chain: FORWARD
-      in_interface: "{{flanneld_wireguard_interface}}"
-      jump: ACCEPT
-
-  - name: allow FORWARD to wireguard interface
-    iptables:
-      chain: FORWARD
-      out_interface: "{{flanneld_wireguard_interface}}"
-      jump: ACCEPT
-
-  when: flanneld_over_wireguard
-
+# persist firewall rules
 - block:
   - name: persist firewall modifications (RedHat)
     template:

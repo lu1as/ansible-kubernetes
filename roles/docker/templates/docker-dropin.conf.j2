@@ -1,0 +1,4 @@
+[Service]
+Environment="DOCKER_CGROUP_DRIVER=--exec-opt native.cgroupdriver={{docker_cgroup_driver}}"
+ExecStart=
+ExecStart=/usr/bin/dockerd -H unix:// $DOCKER_OPTS $DOCKER_CGROUP_DRIVER

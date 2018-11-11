@@ -1,5 +1,6 @@
 *.swp
 *.retry
+.vagrant
 inventories/*
 !inventories/sample.yml
 vars/*

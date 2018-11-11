@@ -73,18 +73,6 @@
 
     when: kubenode_current_version.changed
 
-  - name: create docker dropin directory
-    file:
-      path: /etc/systemd/system/docker.service.d
-      state: directory
-  
-  - name: patch docker service
-    copy:
-      src: docker-dropin.conf
-      dest: /etc/systemd/system/docker.service.d/30-systemd-cgroup-driver.conf
-    notify:
-      - restart docker
-
   - name: create kubelet lib
     file:
       path: /var/lib/kubelet

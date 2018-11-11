@@ -36,6 +36,7 @@ metadata:
   name: kubernetes-dashboard
   namespace: kube-system
 
+{% if kube_rbac %}
 ---
 # ------------------- Dashboard Role & Role Binding ------------------- #
 
@@ -87,6 +88,7 @@ subjects:
 - kind: ServiceAccount
   name: kubernetes-dashboard
   namespace: kube-system
+{% endif %}
 
 ---
 # ------------------- Dashboard Deployment ------------------- #

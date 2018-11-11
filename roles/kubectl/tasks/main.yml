@@ -16,7 +16,7 @@
 - name: set kubectl context
   shell: |
     kubectl config set-cluster {{kube_cluster_name}}-cluster \
-    --server=https://master.{{kube_domain}}:{{kube_apiserver_port}} \
+    --server=https://{{kubectl_apiserver_domain}}:{{kube_apiserver_port}} \
     --certificate-authority={{kubectl_cert_folder}}/certs/ca.crt
 
     kubectl config set-credentials {{kube_cluster_name}}-admin \

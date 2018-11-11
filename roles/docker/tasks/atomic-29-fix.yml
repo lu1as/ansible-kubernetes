@@ -1,0 +1,24 @@
+# fix for atomic 29: change cgroup driver to cgroupfs
+# will be unnecessary with kubernetes v1.10.4
+# see: https://www.projectatomic.io/blog/2018/10/fedora-atomic-28-to-29-upgrade/
+
+- name: atomic 29 fix - check for docker service
+  stat:
+    path: /etc/systemd/system/docker.service
+  register: atomic_29_fix
+
+- name: atomic 29 fix - copy docker service
+  copy:
+    remote_src: true
+    src: /usr/lib/systemd/system/docker.service
+    dest: /etc/systemd/system/docker.service
+  when: not atomic_29_fix.stat.exists
+
+- name: atomic 29 fix - set docker cgroup driver
+  replace:
+    path:  /etc/systemd/system/docker.service
+    regexp: 'native.cgroupdriver=\w+'
+    replace: "native.cgroupdriver={{docker_cgroup_driver}}"
+  when: "ansible_distribution_major_version == '29'
+      and 'kube_minions' in group_names"
+  notify: restart docker
