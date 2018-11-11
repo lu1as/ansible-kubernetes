@@ -7,13 +7,13 @@
     - role: storage-setup
       tags: storage
     - role: basic
-      tags: basic,firewall
+      tags: basic
+    - role: docker
+      tags: docker
     - role: pki
       tags: pki
     - role: etcd
       tags: etcd
-    - role: docker
-      tags: docker
     - role: flanneld
       tags: flanneld
     - role: kubernetes

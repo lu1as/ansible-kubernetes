@@ -39,24 +39,16 @@
   include_tasks: minion.yml
   when: "'kube_minions' in group_names"
 
-# kube-dns and kubernetes-dashboard
-- name: create kube-dns resource (local)
-  template:
-    src: bootstrap/kube-dns.yml.j2
-    dest: kube-dns.yml
-  delegate_to: localhost
-  become: false
-  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
-
-- name: create kubernetes-dashboard resource (local)
-  template:
-    src: bootstrap/kubernetes-dashboard.yml.j2
-    dest: kubernetes-dashboard.yml
-  delegate_to: localhost
-  become: false
-  when: inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
-
 - meta: flush_handlers
+
+# kube-dns and kubernetes-dashboard
+- name: deploy dns and dashboard
+  include_tasks: apply_resource.yml
+  when: "inventory_hostname == hostvars[groups['kube_masters'][0]].inventory_hostname
+        and kube_dashboard"
+  loop:
+    - kube-dns
+    - kubernetes-dashboard
 
 # rbac bootstrap
 - name: bootstrap rbac

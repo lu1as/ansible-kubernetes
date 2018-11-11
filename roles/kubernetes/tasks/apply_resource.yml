@@ -1,0 +1,12 @@
+- name: "copy {{item}} resource config"
+  template:
+    src: "bootstrap/{{item}}.yml.j2"
+    dest: "/home/{{ansible_env.SUDO_USER}}/{{item}}.yml"
+    owner: "{{ansible_env.SUDO_USER}}"
+
+- name: "deploy {{item}}"
+  shell: "kubectl apply -f {{item}}.yml"
+  become: false
+  register: resource_apply
+  changed_when: "'created' in resource_apply.stdout 
+                or ' changed' in resource_apply.stdout"
