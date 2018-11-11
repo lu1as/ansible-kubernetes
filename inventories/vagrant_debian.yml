@@ -1,0 +1,39 @@
+all:
+  hosts:
+    master1:
+      ansible_host: 192.168.123.10
+      ansible_user: vagrant
+      ansible_ssh_private_key_file: .vagrant/machines/master1/libvirt/private_key
+      internal_ip: 192.168.123.10
+    minion1:
+      ansible_host: 192.168.123.11
+      ansible_user: vagrant
+      ansible_ssh_private_key_file: .vagrant/machines/minion1/libvirt/private_key
+      internal_ip: 192.168.123.11
+    client:
+      ansible_connection: local
+  vars:
+    ansible_ssh_common_args: -o StrictHostKeyChecking=no
+    kube_cluster_name: vagrant-debian
+    kube_domain: vagrant.local
+    pki_organization: VAGRANT.LOCAL
+    flanneld_version: 0.9.0
+    etcd_version: 3.2.16
+    kube_version: 1.10.3
+    kube_rbac: true
+  children:
+    kube_masters:
+      hosts:
+        master1:
+    kube_minions:
+      hosts:
+        master1:
+        minion1:
+    etcd_servers:
+      hosts:
+        master1:
+    pki_certs:
+      hosts:
+        master1:
+        minion1:
+        client:

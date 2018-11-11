@@ -2,8 +2,10 @@ all:
   hosts:
     master1:
       ansible_host: 10.1.1.1
+      ansible_user: fedora
     minion1:
       ansible_host: 10.1.1.2
+      ansible_user: fedora
     client:
       ansible_connection: local
     hypervisor:
@@ -11,12 +13,12 @@ all:
   vars:
     kube_cluster_name: kube-cluster
     kube_domain: kube.examle.de
-    pki_organization: example org
+    pki_organization: EXAMPLE.DE
+    flanneld_version: 0.9.0
+    etcd_version: 3.2.16
+    kube_version: 1.10.3
+    kube_rbac: true
   children:
-    atomic:
-      hosts:
-        master1:
-        minion1:
     virtual_machines: # needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
       hosts:
       vars:
