@@ -1,13 +1,14 @@
 flanneld_network_name: minion
 # flanneld network with subnet mask
 flanneld_network: 172.16.0.0/16
-flanneld_interface_name: flannel.1
-# FORWARD on flanneld interface sould be allowed
-flanneld_configure_firewall: false
-flanneld_over_wireguard: false # debian only
-flanneld_wireguard_interface: wg0
-# optional interface used for peer to peer connection, e.g. wg0 for an existing wireguard vpn
-flanneld_default_interface: "{% if flanneld_over_wireguard == true %}{{flanneld_wireguard_interface}}{% endif %}"
+flanneld_interface: flannel.1
+flanneld_configure_firewall: true
+# optional: interface used for peer to peer connection, 
+# e.g. wg0 for an existing wireguard vpn
+flanneld_host_interface:
+# ethtool fix for wireguard (debian only)
+# important: set flanneld_host_interface to the wireguard interface
+flanneld_over_wireguard: false 
 
 flanneld_config_dir: /etc/flanneld
 flanneld_pki_dir: /etc/flanneld/pki

@@ -1,5 +1,4 @@
 ansible_user: fedora
-flanneld_configure_firewall: true
 
 # flanneld_version: 0.9.0
 # etcd_version: 3.2.16
