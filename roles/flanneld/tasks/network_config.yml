@@ -11,8 +11,9 @@
     --cert-file {{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt \
     --key-file {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key \
     get {{flanneld_network_name}}/network/config
-  changed_when: "'Key not found' in flanneld_config_etcd.stderr"
-  failed_when: false
+  changed_when: "flanneld_config_etcd.rc == 4"
+  failed_when: "flanneld_config_etcd.rc != 0
+                and flanneld_config_etcd.rc != 4"
   register: flanneld_config_etcd
 
 - name: upload cluster network config to etcd
