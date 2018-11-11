@@ -21,6 +21,7 @@ all:
     etcd_version: 3.2.16
     kube_version: 1.10.3
     kube_rbac: true
+    pki_enable_backup: true
   children:
     kube_masters:
       hosts:

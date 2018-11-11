@@ -13,3 +13,8 @@ pki_dir: /root/kubernetes-pki
 pki_dest_dir:
 pki_dest_dir_owner: root
 pki_dest_dir_group: root
+
+# pki backup
+pki_enable_backup: false 
+pki_backup_dir: "{{backup_dir}}/kubernetes-pki"
+pki_restore_backup: false
