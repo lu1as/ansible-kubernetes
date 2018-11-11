@@ -1,4 +1,5 @@
 kube_cluster_name: yourserver
 kube_domain: kube.examle.de
 kube_apiserver_port: 6443
+kubectl_apiserver_domain: "master.{{kube_domain}}"
 kubectl_cert_folder: "{{ansible_user_dir}}/.kube/pki/{{kube_cluster_name}}"
