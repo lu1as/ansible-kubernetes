@@ -11,6 +11,10 @@
   notify: disable selinux
   when: ansible_selinux_python_present
 
+- name: init backup
+  include_tasks: backup.yml
+  when: hostvars[groups['kube_masters'][0]].inventory_hostname == inventory_hostname
+
 - name: install atomic packages
   include_tasks: atomic_rpm_install.yml
   when: ansible_pkg_mgr == 'atomic_container'

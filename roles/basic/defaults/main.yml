@@ -1,1 +1,3 @@
 internal_ip: "{{ansible_default_ipv4.address}}"
+backup_dir: /mnt/backup
+backup_nfs_share: 
