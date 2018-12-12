@@ -1,13 +1,13 @@
 - name: check for previous system image
   stat:
-    path: "{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2"
+    path: "{{virt_drives_dir}}/{{hostvars[item].virt_vm_name}}.qcow2"
   register: system_image
 
 - name: copy system image
   copy:
     remote_src: true
     src: "{{virt_drives_dir}}/{{virt_image}}"
-    dest: "{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2"
+    dest: "{{virt_drives_dir}}/{{hostvars[item].virt_vm_name}}.qcow2"
     owner: libvirt-qemu
     group: libvirt-qemu
     mode: 0600
@@ -16,18 +16,11 @@
 - name: create lvm data partition
   lvol:
     vg: "{{virt_lvm_vg}}"
-    lv: "{{hostvars[item].vm_name}}-data"
-    size: "{{hostvars[item].data_size}}"
-
-# - name: set static dhcp address
-#   shell: |
-#       virsh net-update default add ip-dhcp-host \
-#       "<host mac='{{hostvars[item].mac_address}}' name='{{hostvars[item].hostname}}' ip='{{hostvars[item].ansible_host}}' />" \
-#       --live --config
-#   ignore_errors: true
+    lv: "{{hostvars[item].virt_vm_name}}-data"
+    size: "{{hostvars[item].virt_data_size | default(virt_data_size)}}"
 
 - name: create virtual machine
   virt:
-    name: "{{hostvars[item].vm_name}}"
+    name: "{{hostvars[item].virt_vm_name}}"
     command: define
     xml: "{{lookup('template', 'k8s-vm.xml.j2')}}"

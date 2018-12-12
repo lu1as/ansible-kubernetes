@@ -19,12 +19,12 @@ all:
     kube_version: 1.10.3
     kube_rbac: true
   children:
-    virtual_machines: # needs special hostvars: vm_name=k8s-master1 mac_address="XX:XX:XX:XX:XX:XX"
+    virtual_machines: # needs special hostvars: virt_vm_name=k8s-master1 virt_mac_address="XX:XX:XX:XX:XX:XX"
       hosts:
       vars:
-        cpu_cores: 2
-        memory_size_gib: 2
-        data_size: 10g
+        virt_cpu_cores: 2
+        virt_memory_size_gib: 2
+        virt_data_size: 10g
     kube_masters:
       hosts:
         master1:

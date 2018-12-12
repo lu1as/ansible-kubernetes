@@ -3,3 +3,6 @@ virt_drives_dir: /mnt/drives
 virt_images_dir: /mnt/images
 virt_image: fedora_atomic_latest.qcow2
 virt_lvm_vg: /dev/raid1
+virt_data_size: 10g
+virt_cpu_cores: 2
+virt_memory_size_gib: 2
