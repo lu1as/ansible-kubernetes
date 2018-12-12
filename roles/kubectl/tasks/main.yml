@@ -10,7 +10,7 @@
   vars:
     pki_dest_dir: "{{kubectl_cert_folder}}"
     pki_dest_dir_owner: "{{ansible_user_id}}"
-    pki_dest_dir_group: "{{ansible_user_id}}"
+    pki_dest_dir_group: "{{ansible_user_gid}}"
     inventory_hostname: client
 
 - name: set kubectl context
