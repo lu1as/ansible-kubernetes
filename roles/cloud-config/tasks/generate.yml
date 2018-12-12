@@ -13,11 +13,11 @@
 - name: generate iso
   shell: |
     /usr/bin/genisoimage \
-    -output {{virt_images_dir}}/{{hostvars[item].vm_name}}-cloud-config.iso \
+    -output {{virt_images_dir}}/{{hostvars[item].virt_vm_name}}-cloud-config.iso \
     -volid cidata -joliet -rock user-data meta-data
   args:
     chdir: /root
-    creates: "{{virt_images_dir}}/{{hostvars[item].vm_name}}-cloud-config.iso"
+    creates: "{{virt_images_dir}}/{{hostvars[item].virt_vm_name}}-cloud-config.iso"
 
 - name: remove config directory
   file:

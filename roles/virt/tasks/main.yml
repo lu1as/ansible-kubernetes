@@ -16,6 +16,6 @@
 
 - name: start virtual machine
   virt:
-    name: "{{hostvars[item].vm_name}}"
+    name: "{{hostvars[item].virt_vm_name}}"
     state: running
   loop: "{{groups.virtual_machines}}"

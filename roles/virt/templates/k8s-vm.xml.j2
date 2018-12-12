@@ -1,8 +1,8 @@
 <domain type='kvm'>
-  <name>{{hostvars[item].vm_name}}</name>
-  <memory unit='GiB'>{{hostvars[item].memory_size_gib}}</memory>
-  <currentMemory unit='GiB'>{{hostvars[item].memory_size_gib}}</currentMemory>
-  <vcpu placement='static'>{{hostvars[item].cpu_cores}}</vcpu>
+  <name>{{hostvars[item].virt_vm_name}}</name>
+  <memory unit='GiB'>{{hostvars[item].virt_memory_size_gib | default(virt_memory_size_gib)}}</memory>
+  <currentMemory unit='GiB'>{{hostvars[item].virt_memory_size_gib | default(virt_memory_size_gib)}}</currentMemory>
+  <vcpu placement='static'>{{hostvars[item].virt_cpu_cores | default(virt_cpu_cores)}}</vcpu>
   <os>
     <type arch='x86_64' machine='pc-i440fx-2.8'>hvm</type>
   </os>
@@ -30,20 +30,20 @@
     <emulator>/usr/bin/kvm</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='{{virt_drives_dir}}/{{hostvars[item].vm_name}}.qcow2'/>
+      <source file='{{virt_drives_dir}}/{{hostvars[item].virt_vm_name}}.qcow2'/>
       <target dev='vda' bus='virtio'/>
       <boot order='1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </disk>
     <disk type='block' device='disk'>
       <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source dev='{{virt_lvm_vg}}/{{hostvars[item].vm_name}}-data'/>
+      <source dev='{{virt_lvm_vg}}/{{hostvars[item].virt_vm_name}}-data'/>
       <target dev='vdb' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='{{virt_images_dir}}/{{hostvars[item].vm_name}}-cloud-config.iso'/>
+      <source file='{{virt_images_dir}}/{{hostvars[item].virt_vm_name}}-cloud-config.iso'/>
       <target dev='hda' bus='ide'/>
       <readonly/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
@@ -56,7 +56,7 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
     </controller>
     <interface type='network'>
-      <mac address='{{hostvars[item].mac_address}}'/>
+      <mac address='{{hostvars[item].virt_mac_address}}'/>
       <source network='default'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
