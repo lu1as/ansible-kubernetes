@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
 # kube-proxy config
 
-KUBE_PROXY_ARGS="--hostname-override={{inventory_hostname}}.{{kube_domain}}"
+KUBE_PROXY_ARGS="--hostname-override={{inventory_hostname}}.{{kube_domain}} --cluster-cidr={{kube_proxy_cluster_cidr}} --proxy-mode={{kube_proxy_mode}}{% if kube_proxy_mode == 'ipvs' %} --ipvs-scheduler={{kube_proxy_ipvs_scheduler}}{% endif %}"

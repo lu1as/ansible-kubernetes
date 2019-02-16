@@ -3,7 +3,7 @@ kube_domain: kube.examle.de
 kube_config_folder: /etc/kubernetes
 kube_pki_dir: /etc/kubernetes/pki
 kube_taint_master: true
-kube_version: 1.11.2
+kube_version: 1.11.7
 kube_arch: amd64
 kube_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
 kube_service_network: 172.17.0.0/16
@@ -31,6 +31,11 @@ kube_kubelet_system_reserved_cpu: 100m
 kube_kubelet_system_reserved_memory: 256Mi
 kube_kubelet_fail_swap_on: false
 kube_kubelet_port: 10250
+
+# proxy
+kube_proxy_mode: iptables
+kube_proxy_ipvs_scheduler: rr
+kube_proxy_cluster_cidr: "{{flanneld_network}}"
 
 # etcd
 etcd_port: 2379
