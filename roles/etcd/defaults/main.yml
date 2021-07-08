@@ -1,3 +1,6 @@
+etcd_version: 3.3.9
+etcd_arch: amd64
+
 # etcd listen port
 etcd_port: 2379
 # etcd cluster peer port
@@ -6,6 +9,14 @@ etcd_advertise_ip: "{{ansible_default_ipv4.address}}"
 
 etcd_config_dir: /etc/etcd
 etcd_pki_dir: /etc/etcd/pki
-etcd_version: 3.3.9
 etcd_download_dir: "{{cache_dir | default(ansible_env.HOME)}}"
-etcd_arch: amd64
+
+# enable snapshots
+etcd_enable_snapshots: false
+etcd_snapshot_dir: "{{backup_dir}}/etcd-snapshots"
+# enable cronjob for taking daily snapshots
+etcd_snapshot_cronjob: true
+# restore from snapshot (oneshot)
+etcd_restore_snapshot:
+# take a manual snapshot (oneshot)
+etcd_manual_snapshot: false

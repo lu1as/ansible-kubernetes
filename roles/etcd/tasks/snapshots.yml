@@ -1,0 +1,30 @@
+- name: create snapshot directory
+  file:
+    path: "{{etcd_snapshot_dir}}"
+    state: directory
+    mode: 0700
+    owner: etcd
+    group: etcd
+
+- name: take manual snapshot
+  shell: |
+    ETCDCTL_API=3 etcdctl --endpoints https://{{inventory_hostname}}.{{kube_domain}}:{{etcd_port}} \
+    --cacert {{etcd_pki_dir}}//certs/ca.crt \
+    --cert {{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt \
+    --key {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key \
+    snapshot save {{etcd_snapshot_dir}}/snapshot-manual.db
+  when: etcd_manual_snapshot
+
+- name: create cronjob for daily snapshots (keeped for a week)
+  cron:
+    name: backup etcd database
+    minute: "0"
+    hour: "5"
+    job: >
+      ETCDCTL_API=3 etcdctl --endpoints https://{{inventory_hostname}}.{{kube_domain}}:{{etcd_port}}
+      --cacert {{etcd_pki_dir}}//certs/ca.crt
+      --cert {{etcd_pki_dir}}/certs/{{inventory_hostname}}.crt
+      --key {{etcd_pki_dir}}/keys/{{inventory_hostname}}.key
+      snapshot save {{etcd_snapshot_dir}}/snapshot-$(date +%d-%m-%Y).db
+      && find {{etcd_snapshot_dir}} -type f -name '*.db' -mtime +7 -exec rm {} \;
+  when: etcd_snapshot_cronjob

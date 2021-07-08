@@ -1,0 +1,13 @@
+- name: create backup directory
+  file:
+    path: "{{backup_dir}}"
+    state: directory
+    mode: 0755
+
+- name: mount backup nfs share
+  mount:
+    path: "{{backup_dir}}"
+    src: "{{backup_nfs_share}}"
+    fstype: nfs
+    state: mounted
+  when: backup_nfs_share is not none

@@ -32,7 +32,20 @@
       name: etcd
       enabled: true
 
+  - name: restore snapshot
+    shell: |
+      sudo -u etcd bash -c 'ETCDCTL_API=3 etcdctl \
+        snapshot restore {{etcd_snapshot_dir}}/{{etcd_restore_snapshot}} \
+        --data-dir="/var/lib/etcd/{{inventory_hostname}}.etcd"'
+    args:
+      warn: false
+    when: etcd_restore_snapshot is not none
 
   when: "'etcd_servers' in group_names"
 
 - meta: flush_handlers
+
+# snapshots
+- include_tasks: snapshots.yml
+  when: "'etcd_servers' in group_names
+        and etcd_enable_snapshots"
