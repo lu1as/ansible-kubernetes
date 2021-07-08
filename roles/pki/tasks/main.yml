@@ -1,8 +1,10 @@
+# initialize or restore pki and setup backup
 - name: init
   include_tasks: init.yml
-  when: (pki_dest_dir is none) and 
-        (inventory_hostname == hostvars[pki_master].inventory_hostname)
+  when: pki_dest_dir is none 
+        and inventory_hostname == hostvars[pki_master].inventory_hostname
 
+# copy pki files to another folder or other nodes
 - name: copy to destination
   include_tasks: copy.yml
   when: pki_dest_dir is not none

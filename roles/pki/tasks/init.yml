@@ -1,3 +1,13 @@
+# restore backup
+- name: restore backup
+  synchronize:
+    src: "{{pki_backup_dir}}/"
+    dest: "{{pki_dir}}"
+    recursive: true
+  delegate_to: "{{pki_master}}"
+  when: pki_restore_backup
+
+# initialize pki
 - name: create directory structure
   file:
     name: "{{item}}"
@@ -35,3 +45,12 @@
   shell: "openssl genrsa -out {{pki_dir}}/keys/service_accounts.key 4096"
   args:
     creates: "{{pki_dir}}/keys/service_accounts.key"
+
+# create backup
+- name: create backup
+  synchronize:
+    src: "{{pki_dir}}/"
+    dest: "{{pki_backup_dir}}"
+    recursive: true
+  delegate_to: "{{pki_master}}"
+  when: pki_enable_backup

@@ -32,3 +32,14 @@ Wireguard needs a special patch, which you can apply by setting `flanneld_over_w
 
     ansible-playbook -i inventories/<env> kube-client.yml
     kubectl config use-context <kube-context>
+
+## Backup and restore
+
+Backups will be created on first master node at `backup_dir` which is `/mnt/backup` by default.
+If you want to use a nfs share at this location, set `backup_nfs_share` to your share.
+For example: `nfs-server:/kubernetes-backup`
+
+### Pki backup
+
+To enable pki backup set `pki_enable_backup` to `true`.
+Restore from backup: `--extra-vars="pki_restore_backup=true"`
